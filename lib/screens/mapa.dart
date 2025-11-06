@@ -34,50 +34,56 @@ class _MapaScreenState extends State<MapaScreen> {
         children: [
           // Encabezado: Nivel y Monedas
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15), // margen lateral leve
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 247, 107, 156),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.bar_chart, color: Colors.purple),
-                      const SizedBox(width: 6),
-                      Text(
-                        "Nivel",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 247, 107, 156),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, // centra el contenido
+                      children: [
+                        const Icon(Icons.bar_chart, color: Colors.purple),
+                        const SizedBox(width: 6),
+                        const Text(
+                          "Nivel",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 247, 107, 156),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.attach_money, color: Colors.purple),
-                      const SizedBox(width: 6),
-                      Text(
-                        "Monedas",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                const SizedBox(width: 10), // espacio pequeño entre los dos
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 247, 107, 156),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.attach_money, color: Colors.purple),
+                        const SizedBox(width: 6),
+                        const Text(
+                          "Monedas",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -89,7 +95,7 @@ class _MapaScreenState extends State<MapaScreen> {
             alignment: Alignment.center,
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.58,
+                height: MediaQuery.of(context).size.height * 0.6,
                 child: SingleChildScrollView(
                   controller: _scrollController,
                   scrollDirection: Axis.horizontal,
@@ -127,63 +133,68 @@ class _MapaScreenState extends State<MapaScreen> {
               width: double.infinity,
               color: const Color(0xFFFFC8D0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start, //  cambia esto
                 children: [
-                  // Gato más grande pero sin salirse
-                  Image.asset("assets/gato/gato.png",
-                      height: MediaQuery.of(context).size.height * 0.2),
-                  const SizedBox(height: 10),
-
-                  // Botones más cerca del gato
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orangeAccent,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        child: const Text(
-                          "Configuración",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white, // ← texto blanco
-                            fontWeight: FontWeight.bold, // opcional, se ve mejor
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orangeAccent,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 40, vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        child: const Text(
-                          "Mercado",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white, // ← texto blanco
-                            fontWeight: FontWeight.bold, // opcional, se ve mejor
-                          ),
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 5), // espacio s
+                  Image.asset(
+                    "assets/gato/gato.png",
+                    height: MediaQuery.of(context).size.height * 0.2,
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 5), // espacio entre el gato a los botones
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // reduce el vertical
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orangeAccent,
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: const Text(
+                              "Configuración",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orangeAccent,
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: const Text(
+                              "Mercado",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
+
+
         ],
       ),
     );
