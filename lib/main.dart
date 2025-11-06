@@ -1,28 +1,48 @@
+
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart'; // <- agregar
-//import 'screens/pantalla_carga.dart';
-import 'firebase_options.dart'; //
-import 'screens/registro.dart'; 
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'screens/pantalla_carga.dart';
+import 'screens/registro.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // <- necesario para Firebase
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, // <- inicializa Firebase
+    options: DefaultFirebaseOptions.currentPlatform,
   );
 
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool mostrarPantallaCarga = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(seconds: 2), () { //cambiar a 20 solo esta asi para pruebas
+      setState(() {
+        mostrarPantallaCarga = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Mi App',
-      home: const RegistroScreen (),
-
+      home: mostrarPantallaCarga
+          ? const SplashScreen()
+          : const RegistroScreen(),
     );
   }
 }

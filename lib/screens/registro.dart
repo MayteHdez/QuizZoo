@@ -173,9 +173,15 @@ class _RegistroScreenState extends State<RegistroScreen> {
               ),
               const SizedBox(height: 30),
 
+
               // Imagen
-              Image.asset("assets/imagenes_general/animales.png", height: 120),
-              const SizedBox(height: 30),
+              Flexible(
+                child: Image.asset(
+                  "assets/imagenes_general/animales.png",
+                  fit: BoxFit.contain,
+                ),
+              ),
+
 
               // ¿Ya tienes cuenta? Inicia sesión
               Row(
@@ -189,7 +195,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const IniciarSesionScreen()),
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
                       );
                     },
                     child: const Text(
