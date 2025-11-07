@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'config.dart';
 
 class MapaScreen extends StatefulWidget {
   const MapaScreen({super.key});
@@ -25,6 +26,17 @@ class _MapaScreenState extends State<MapaScreen> {
       curve: Curves.easeOut,
     );
   }
+
+  double generalTop = 177;
+  double generalLeft = 131;
+
+  void moverBotonGeneral(double top, double left) {
+    setState(() {
+      generalTop = top;
+      generalLeft = left;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +102,7 @@ class _MapaScreenState extends State<MapaScreen> {
             ),
           ),
 
-          // Mapa con flechas centradas sobre él
+          // Mapa con flechas centradas sobre él y botones encima
           Stack(
             alignment: Alignment.center,
             children: [
@@ -99,14 +111,217 @@ class _MapaScreenState extends State<MapaScreen> {
                 child: SingleChildScrollView(
                   controller: _scrollController,
                   scrollDirection: Axis.horizontal,
-                  child: Image.asset(
-                    "assets/imagenes_general/mapa.png",
-                    fit: BoxFit.cover,
+                  child: Stack(
+                    children: [
+                       SizedBox( // 👈 le da un alto fijo al mapa y a todo lo que está encima
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: Image.asset(
+                            "assets/imagenes_general/mapa.png",
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+
+                      // Botones sobre el mapa:
+                      // Botón Tema 1
+                     Positioned(
+                      top: 175,
+                      left: 160,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          moverBotonGeneral(177, 131);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
+                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                          ),
+                        ),
+                        child: const Text(
+                          "Tema 1",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13, // 👈 texto un poco más pequeño también
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    //Boton Tema 2
+                    Positioned(
+                      top: 210,
+                      left: 130,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          moverBotonGeneral(208, 202);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
+                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                          ),
+                        ),
+                        child: const Text(
+                          "Tema 2",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13, // 👈 texto un poco más pequeño también
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+
+// Botón Tema 3
+                     Positioned(
+                      top: 175,
+                      left: 410,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          moverBotonGeneral(177, 379);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
+                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                          ),
+                        ),
+                        child: const Text(
+                          "Tema 3",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13, // 👈 texto un poco más pequeño también
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    //Boton Tema 4
+                    Positioned(
+                      top: 210,
+                      left: 380,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          moverBotonGeneral(208, 450);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
+                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                          ),
+                        ),
+                        child: const Text(
+                          "Tema 4",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13, // 👈 texto un poco más pequeño también
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Botón Tema 5
+                     Positioned(
+                      top: 175,
+                      left: 660,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          moverBotonGeneral(177, 629);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
+                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                          ),
+                        ),
+                        child: const Text(
+                          "Tema 5",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13, // 👈 texto un poco más pequeño también
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    //Boton Tema 6
+                    Positioned(
+                      top: 210,
+                      left: 630,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          moverBotonGeneral(208, 700);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
+                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                          ),
+                        ),
+                        child: const Text(
+                          "Tema 6",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13, // 👈 texto un poco más pequeño también
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                      //Boton general
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        top: generalTop,
+                        left: generalLeft,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFC8D0).withOpacity(0.8),
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(4),
+                            minimumSize: const Size(30, 30),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            elevation: 3,
+                          ),
+                          child: const Icon(
+                            Icons.pets,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                        ),
+                      ),
+
+
+
+                    ],
                   ),
                 ),
               ),
 
-              // Flechas centradas en el mapa
+              // Flechas centradas en el mapa (como antes)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -126,6 +341,7 @@ class _MapaScreenState extends State<MapaScreen> {
               ),
             ],
           ),
+
 
           // Fondo rosa con gato + botones
           Expanded(
@@ -147,7 +363,12 @@ class _MapaScreenState extends State<MapaScreen> {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ConfigScreen()),
+                      );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.orangeAccent,
                               padding: const EdgeInsets.symmetric(vertical: 15),
