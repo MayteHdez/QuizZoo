@@ -47,6 +47,7 @@ class _MapaScreenState extends State<MapaScreen> {
       backgroundColor: const Color(0xFFFFC8D0), // Rosa suave
       body: Column(
         children: [
+          SizedBox(height: 25),
           // Encabezado: Nivel y Monedas
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15), // margen lateral leve
@@ -352,88 +353,104 @@ class _MapaScreenState extends State<MapaScreen> {
 
 
           // Fondo rosa con gato + botones
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              color: const Color(0xFFFFC8D0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start, //  cambia esto
-                children: [
-                  const SizedBox(height: 5), // espacio s
-                  GestureDetector(
-                    onTap: () {
+Expanded(
+  child: Container(
+    width: double.infinity,
+    color: const Color(0xFFFFC8D0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        
+        // GATO
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CasaScreen()),
+            );
+          },
+          child: Image.asset(
+            "assets/gato/gato.png",
+            height: MediaQuery.of(context).size.height * 0.22,
+          ),
+        ),
+
+        // BOTONES ANCHOS
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                
+                // 🔥 BOTÓN ANCHO
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
                       Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const CasaScreen()),
-                      );},
-                    child: Image.asset(
-                      "assets/gato/gato.png",
-                      height: MediaQuery.of(context).size.height * 0.2,
-                    ),
-                  ),
-                  const SizedBox(height: 5), // espacio entre el gato a los botones
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // reduce el vertical
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const ConfigScreen()),
                       );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orangeAccent,
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                            child: const Text(
-                              "Configuración",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const IngredientesScreen()),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orangeAccent,
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                            child: const Text(
-                              "Mercado",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orangeAccent,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: const Text(
+                      "Configuración",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ],
-              ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // 🔥 SEGUNDO BOTÓN ANCHO
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const IngredientesScreen()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orangeAccent,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: const Text(
+                      "Mercado",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
+        ),
+      ],
+    ),
+  ),
+)
+
+
 
 
         ],
