@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'mapa.dart';
+import 'fondo.dart';
 
 class CasaScreen extends StatelessWidget {
   const CasaScreen({super.key});
@@ -114,7 +115,7 @@ class CasaScreen extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const MapaScreen()),
+                                MaterialPageRoute(builder: (context) => const FondoScreen()),
                               );
                             },
                             style: ElevatedButton.styleFrom(
