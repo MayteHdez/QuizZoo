@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'historiagato.dart';
+import 'historiaconejo.dart';
+import 'historiaperro.dart';
 
-class RegistroMascotaScreen extends StatelessWidget {
-  final String email; //
+
+class RegistroMascotaScreen extends StatefulWidget {
+  final String email;
 
   const RegistroMascotaScreen({super.key, required this.email});
 
-  Future<void> _guardarMascota(BuildContext context, String tipo) async {
+  @override
+  State<RegistroMascotaScreen> createState() => _RegistroMascotaScreenState();
+}
+
+class _RegistroMascotaScreenState extends State<RegistroMascotaScreen> {
+  String? mascotaSeleccionada;
+
+  Future<void> _guardarMascota(String tipo) async {
+    setState(() => mascotaSeleccionada = tipo);
+
     try {
-      await FirebaseFirestore.instance.collection("usuario").doc(email).update({
-        "tipo_m": tipo,
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Mascota $tipo seleccionada")),
-      );
-
-      // Aquí podrías navegar a la pantalla principal de la app
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      await FirebaseFirestore.instance
+          .collection("usuario")
+          .doc(widget.email)
+          .update({"Tipo_m": tipo});
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error al guardar mascota: $e")),
@@ -46,51 +53,85 @@ class RegistroMascotaScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.pets, size: 18),
                   SizedBox(width: 6),
-                  Text("Elige tu mascota",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                  Text(
+                    "Elige tu mascota",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
                 ],
               ),
               const SizedBox(height: 30),
 
-              // Botón Gato
-              GestureDetector(
-                onTap: () => _guardarMascota(context, "gato"),
-                child: Image.asset("assets/gato/gato.png",
-                    height: 100),
-              ),
+              mascotaButton("gato", "assets/gato/gato.png"),
               const SizedBox(height: 20),
 
-              // Botón Perro
-              GestureDetector(
-                onTap: () => _guardarMascota(context, "perro"),
-                child: Image.asset("assets/perro/perro.png",
-                    height: 100),
-              ),
+              mascotaButton("perro", "assets/perro/perro.png"),
               const SizedBox(height: 20),
 
-              // Botón Conejo
-              GestureDetector(
-                onTap: () => _guardarMascota(context, "conejo"),
-                child: Image.asset("assets/conejo/conejo.png",
-                    height: 100),
-              ),
-
+              mascotaButton("conejo", "assets/conejo/conejo.png"),
               const SizedBox(height: 40),
 
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // volver atrás si no quiere elegir
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              if (mascotaSeleccionada != null)
+                ElevatedButton(
+                  onPressed: () {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text("Mascota ${mascotaSeleccionada!} registrada correctamente")),
+  );
+
+  // Si eligió gato → ir a la historia del gato
+  if (mascotaSeleccionada == "gato") {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const HistoriaGato()),
+    );
+  }
+
+  // Luego puedes agregar más pantallas si deseas:
+  else if (mascotaSeleccionada == "perro") {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const HistoriaPerro()),
+    );
+  }
+
+  else if (mascotaSeleccionada == "conejo") {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const HistoriaConejo()),
+    );
+  }
+},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  ),
+                  child: const Text(
+                    "Continuar",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
                 ),
-                child: const Text("Continuar",
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
-              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget mascotaButton(String tipo, String path) {
+    bool seleccionado = mascotaSeleccionada == tipo;
+    return GestureDetector(
+      onTap: () => _guardarMascota(tipo),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: seleccionado ? Colors.white.withOpacity(0.6) : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          border: seleccionado
+              ? Border.all(color: Colors.orangeAccent, width: 3)
+              : null,
+        ),
+        child: Image.asset(path, height: 100),
       ),
     );
   }

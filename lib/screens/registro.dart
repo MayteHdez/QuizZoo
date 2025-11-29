@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'registro_m.dart'; 
-import 'iniciar_sesion.dart'; 
+// import 'package:cloud_firestore/cloud_firestore.dart'; // 🔹 Comentado para pruebas
+import 'registro_m.dart';
+import 'iniciar_sesion.dart';
 
 class RegistroScreen extends StatefulWidget {
   const RegistroScreen({super.key});
@@ -16,11 +16,10 @@ class _RegistroScreenState extends State<RegistroScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // final FirebaseFirestore _firestore = FirebaseFirestore.instance; // 🔹 Comentado
 
   bool isLoading = false;
 
-  // Función para registrar usuario
   Future<void> _registrarUsuario() async {
     String email = emailController.text.trim();
     String nombre = nombreController.text.trim();
@@ -42,13 +41,14 @@ class _RegistroScreenState extends State<RegistroScreen> {
     });
 
     try {
-      // Verificar si ya existe un usuario con ese correo
+      // 🔸 Comentamos toda la parte de Firestore para probar solo la navegación
+
+      /*
       var usuarioExistente = await _firestore.collection("usuario").doc(email).get();
 
       if (usuarioExistente.exists) {
         _mostrarError("El correo ya está registrado");
       } else {
-        // Crear usuario nuevo en Firestore
         await _firestore.collection("usuario").doc(email).set({
           "Id": email,
           "Nombre": nombre,
@@ -62,21 +62,22 @@ class _RegistroScreenState extends State<RegistroScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Registro exitoso")),
         );
-
-        // Limpiar campos (opcional)
-        emailController.clear();
-        nombreController.clear();
-        passwordController.clear();
-        confirmPasswordController.clear();
-
-        // Navegar a RegistroMascotaScreen
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RegistroMascotaScreen(email: email),
-          ),
-        );
       }
+      */
+
+      // 🔹 Simulación de éxito directo
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Registro simulado exitoso")),
+      );
+
+      // 🔹 Navegar a selección de mascota (sin guardar en Firestore)
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RegistroMascotaScreen(email: email),
+        ),
+      );
+
     } catch (e) {
       _mostrarError("Error al registrar: $e");
     }
@@ -86,7 +87,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
     });
   }
 
-  // Función para mostrar errores
   void _mostrarError(String mensaje) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(mensaje)),
@@ -111,7 +111,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
               ),
               const SizedBox(height: 30),
 
-              // Email
               TextField(
                 controller: emailController,
                 decoration: const InputDecoration(
@@ -122,7 +121,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
               ),
               const SizedBox(height: 15),
 
-              // Nombre
               TextField(
                 controller: nombreController,
                 decoration: const InputDecoration(
@@ -133,7 +131,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
               ),
               const SizedBox(height: 15),
 
-              // Contraseña
               TextField(
                 controller: passwordController,
                 obscureText: true,
@@ -145,7 +142,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
               ),
               const SizedBox(height: 15),
 
-              // Confirmar contraseña
               TextField(
                 controller: confirmPasswordController,
                 obscureText: true,
@@ -157,7 +153,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
               ),
               const SizedBox(height: 25),
 
-              // Botón continuar
               ElevatedButton(
                 onPressed: isLoading ? null : _registrarUsuario,
                 style: ElevatedButton.styleFrom(
@@ -173,8 +168,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
               ),
               const SizedBox(height: 30),
 
-
-              // Imagen
               Flexible(
                 child: Image.asset(
                   "assets/imagenes_general/animales.png",
@@ -182,8 +175,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
                 ),
               ),
 
-
-              // ¿Ya tienes cuenta? Inicia sesión
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(seconds: 2), () { //cambiar a 20 solo esta asi para pruebas
+    Future.delayed(const Duration(seconds: 8),() { //cambiar a 20 solo esta asi para pruebas
       setState(() {
         mostrarPantallaCarga = false;
       });
@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Mi App',
       home: mostrarPantallaCarga
-          ? const SplashScreen()
+          ? const PantallaCarga()
           : const RegistroScreen(),
     );
   }
