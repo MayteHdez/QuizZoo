@@ -31,4 +31,6 @@ flutter:
   assets:
     - assets/imagenes_general/
     - assets/gato/
+    - assets/conejo/
+    - assets/perro/
  

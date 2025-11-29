@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'registro.dart';
 import 'mapa.dart';
 
@@ -13,10 +14,58 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  bool isLoading = false;
+
+  Future<void> _login() async {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      _mostrarMensaje("Todos los campos son obligatorios");
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      final doc = await _firestore.collection("usuario").doc(email).get();
+
+      if (!doc.exists) {
+        _mostrarMensaje("El usuario no existe");
+      } else {
+        final datos = doc.data()!;
+        String passBD = datos["contraseña"] ?? "";
+
+        if (password != passBD) {
+          _mostrarMensaje("Contraseña incorrecta");
+        } else {
+          _mostrarMensaje("Inicio de sesión exitoso");
+
+          // Ir a MapaScreen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MapaScreen()),
+          );
+        }
+      }
+    } catch (e) {
+      _mostrarMensaje("Error: $e");
+    }
+
+    setState(() => isLoading = false);
+  }
+
+  void _mostrarMensaje(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
+
   @override
   Widget build(BuildContext context) {
+    // 🔴 TU DISEÑO SE QUEDA IGUAL — SOLO CAMBIÉ EL onPressed
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8B6), // tono pastel amarillo claro
+      backgroundColor: const Color(0xFFF7F8B6),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
@@ -33,7 +82,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 30),
 
-              // Campo de Email
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
@@ -50,7 +98,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Campo de Contraseña
               TextField(
                 controller: passwordController,
                 obscureText: true,
@@ -69,7 +116,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 10),
 
-              // Texto: Olvidaste tu contraseña
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
@@ -86,45 +132,38 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 10),
 
-              // Botón "Empezar"
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MapaScreen()),
-                      );
-                },
+                onPressed: isLoading ? null : _login,     // <--- AQUÍ VA TU LOGIN REAL
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF9AA2), // rosa suave
+                  backgroundColor: const Color(0xFFFF9AA2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                   elevation: 4,
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 14),
                 ),
-                child: const Text(
-                  'Empezar',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        'Empezar',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
 
               const SizedBox(height: 30),
 
-              // Imagen de los animales
               Image.asset(
                 "assets/imagenes_general/animales.png",
-                height: 250, 
+                height: 250,
                 fit: BoxFit.contain,
               ),
 
-
               const SizedBox(height: 30),
 
-              // Texto de registro
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
