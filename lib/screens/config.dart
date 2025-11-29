@@ -288,7 +288,9 @@ class _ConfigScreenState extends State<ConfigScreen> {
                       textStyle: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.w600),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     child: const Text(
                       "Aceptar",
                       style: TextStyle(color: Colors.white),

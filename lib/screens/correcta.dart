@@ -1,0 +1,147 @@
+import 'package:flutter/material.dart';
+
+class CorrectaScreen extends StatelessWidget {
+  const CorrectaScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFFD9F8C4), // fondo verde pastel
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+
+            // ⭐ ENCABEZADO
+            Row(
+              children: [
+                Image.asset(
+                  "assets/imagenes_general/reloj.png",
+                  height: 35,
+                ),
+                const SizedBox(width: 15),
+
+                // Barra rosa
+                Expanded(
+                  child: Container(
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: Colors.pink.shade200,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 25),
+
+            // 📘 TARJETA 
+            Container(
+  padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
+  width: double.infinity,
+  decoration: BoxDecoration(
+    color: Colors.purple.shade200,
+    borderRadius: BorderRadius.circular(20),
+  ),
+  child: Column(
+    children: [
+      // 🔵 ÍTEM 1 — MÁS GRANDE
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 247, 107, 156),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.bar_chart, color: Colors.white, size: 26),
+            const SizedBox(width: 10),
+            const Text(
+              "Nivel",
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Image.asset(
+              "assets/imagenes_general/flecha.png",
+              height: 22,
+              width: 22,
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: 15),
+
+      // 🔵 ÍTEM 2 — MÁS GRANDE
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 247, 107, 156),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.attach_money, color: Colors.white, size: 26),
+            const SizedBox(width: 10),
+            const Text(
+              "Monedas",
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Image.asset(
+              "assets/imagenes_general/flecha.png",
+              height: 22,
+              width: 22,
+            ),
+          ],
+        ),
+      ),
+    ],
+  ),
+),
+
+   const SizedBox(height: 15),
+
+// 🎉 IMAGEN "bien" — LIGERAMENTE A LA IZQUIERDA
+Align(
+  alignment: const Alignment(0.5, 0), // 👈 solo un poco a la izquierda
+  child: Image.asset(
+    "assets/imagenes_general/bien.png",
+    height: 200,
+  ),
+),
+
+
+
+// 🐱 GATO FELIZ — LIGERAMENTE A LA DERECHA
+Align(
+  alignment: const Alignment(-0.5, 0), // 👉 solo un poco a la derecha
+  child: Image.asset(
+    "assets/gato/gato_feliz.png",
+    height: 200,
+  ),
+),
+         
+            
+          ],
+        ),
+      ),
+    );
+  }
+
+
+}

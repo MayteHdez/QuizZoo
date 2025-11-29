@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'config.dart';
+import 'mercado.dart';
+import 'pregunta.dart';
+import'casa.dart';
 
 class MapaScreen extends StatefulWidget {
   const MapaScreen({super.key});
@@ -297,7 +300,12 @@ class _MapaScreenState extends State<MapaScreen> {
                         top: generalTop,
                         left: generalLeft,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                             Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => PreguntaScreen()),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFFFC8D0).withOpacity(0.8),
                             shape: const CircleBorder(),
@@ -352,9 +360,16 @@ class _MapaScreenState extends State<MapaScreen> {
                 mainAxisAlignment: MainAxisAlignment.start, //  cambia esto
                 children: [
                   const SizedBox(height: 5), // espacio s
-                  Image.asset(
-                    "assets/gato/gato.png",
-                    height: MediaQuery.of(context).size.height * 0.2,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const CasaScreen()),
+                      );},
+                    child: Image.asset(
+                      "assets/gato/gato.png",
+                      height: MediaQuery.of(context).size.height * 0.2,
+                    ),
                   ),
                   const SizedBox(height: 5), // espacio entre el gato a los botones
                   Padding(
@@ -389,7 +404,12 @@ class _MapaScreenState extends State<MapaScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const IngredientesScreen()),
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.orangeAccent,
                               padding: const EdgeInsets.symmetric(vertical: 15),
