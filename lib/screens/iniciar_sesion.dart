@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _mostrarMensaje("El usuario no existe");
       } else {
         final datos = doc.data()!;
-        String passBD = datos["contraseña"] ?? "";
+        String passBD = datos["contrasena"] ?? "";
 
         if (password != passBD) {
           _mostrarMensaje("Contraseña incorrecta");

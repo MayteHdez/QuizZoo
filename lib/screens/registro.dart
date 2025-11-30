@@ -48,7 +48,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
       } else {
         await _firestore.collection("usuario").doc(email).set({
           "nombre": nombre,
-          "contraseña": password,         
+          "contrasena": password,         
           "nombre_m": "",
           "tipo_m": "",
           "puntos": 0,
