@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
 
-class CorrectaScreen extends StatelessWidget {
+class CorrectaScreen extends StatefulWidget {
   const CorrectaScreen({super.key});
+
+  @override
+  State<CorrectaScreen> createState() => _CorrectaScreenState();
+}
+
+class _CorrectaScreenState extends State<CorrectaScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Espera 2 segundos y luego regresa a la pantalla anterior
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pop(context); // vuelve a PreguntaScreen
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFD9F8C4), // fondo verde pastel
+      backgroundColor: const Color(0xFFD9F8C4), // fondo verde pastel
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
@@ -16,13 +31,8 @@ class CorrectaScreen extends StatelessWidget {
             // ⭐ ENCABEZADO
             Row(
               children: [
-                Image.asset(
-                  "assets/imagenes_general/reloj.png",
-                  height: 35,
-                ),
+                Image.asset("assets/imagenes_general/reloj.png", height: 35),
                 const SizedBox(width: 15),
-
-                // Barra rosa
                 Expanded(
                   child: Container(
                     height: 20,
@@ -39,109 +49,103 @@ class CorrectaScreen extends StatelessWidget {
 
             // 📘 TARJETA 
             Container(
-  padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
-  width: double.infinity,
-  decoration: BoxDecoration(
-    color: Colors.purple.shade200,
-    borderRadius: BorderRadius.circular(20),
-  ),
-  child: Column(
-    children: [
-      // 🔵 ÍTEM 1 — MÁS GRANDE
-      Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 247, 107, 156),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.bar_chart, color: Colors.white, size: 26),
-            const SizedBox(width: 10),
-            const Text(
-              "Nivel",
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+              padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.purple.shade200,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                children: [
+                  // 🔵 ÍTEM 1 — MÁS GRANDE
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 247, 107, 156),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.bar_chart, color: Colors.white, size: 26),
+                        const SizedBox(width: 10),
+                        const Text(
+                          "Nivel",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Image.asset(
+                          "assets/imagenes_general/flecha.png",
+                          height: 22,
+                          width: 22,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  // 🔵 ÍTEM 2 — MÁS GRANDE
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 247, 107, 156),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.attach_money, color: Colors.white, size: 26),
+                        const SizedBox(width: 10),
+                        const Text(
+                          "Monedas",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Image.asset(
+                          "assets/imagenes_general/flecha.png",
+                          height: 22,
+                          width: 22,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 10),
-            Image.asset(
-              "assets/imagenes_general/flecha.png",
-              height: 22,
-              width: 22,
-            ),
-          ],
-        ),
-      ),
 
-      const SizedBox(height: 15),
+            const SizedBox(height: 15),
 
-      // 🔵 ÍTEM 2 — MÁS GRANDE
-      Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 247, 107, 156),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.attach_money, color: Colors.white, size: 26),
-            const SizedBox(width: 10),
-            const Text(
-              "Monedas",
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+            // 🎉 IMAGEN "bien"
+            Align(
+              alignment: const Alignment(0.5, 0),
+              child: Image.asset(
+                "assets/imagenes_general/bien.png",
+                height: 200,
               ),
             ),
-            const SizedBox(width: 10),
-            Image.asset(
-              "assets/imagenes_general/flecha.png",
-              height: 22,
-              width: 22,
+
+            // 🐱 GATO FELIZ
+            Align(
+              alignment: const Alignment(-0.5, 0),
+              child: Image.asset(
+                "assets/gato/gato_feliz.png",
+                height: 200,
+              ),
             ),
-          ],
-        ),
-      ),
-    ],
-  ),
-),
-
-   const SizedBox(height: 15),
-
-// 🎉 IMAGEN "bien" — LIGERAMENTE A LA IZQUIERDA
-Align(
-  alignment: const Alignment(0.5, 0), // 👈 solo un poco a la izquierda
-  child: Image.asset(
-    "assets/imagenes_general/bien.png",
-    height: 200,
-  ),
-),
-
-
-
-// 🐱 GATO FELIZ — LIGERAMENTE A LA DERECHA
-Align(
-  alignment: const Alignment(-0.5, 0), // 👉 solo un poco a la derecha
-  child: Image.asset(
-    "assets/gato/gato_feliz.png",
-    height: 200,
-  ),
-),
-         
-            
           ],
         ),
       ),
     );
   }
-
-
 }

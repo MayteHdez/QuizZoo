@@ -421,12 +421,17 @@ class _MapaScreenState extends State<MapaScreen> {
                         left: generalLeft,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
+                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => PreguntaScreen(),
+                                builder: (_) => PreguntaScreen(
+                                  nivel: 1,
+                                  tema: "Matemáticas",
+                                  preguntasUsadas: [],
+                                ),
                               ),
                             );
+
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(
