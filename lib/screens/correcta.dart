@@ -13,22 +13,39 @@ class CorrectaScreen extends StatefulWidget {
 
 
 class _CorrectaScreenState extends State<CorrectaScreen> {
+
+   /// FUNCION PARA CALCULAR NIVEL
+  int calcularNivel(int puntos) {
+    int nivel = (puntos ~/ 15) + 1;  // Cada 15 puntos = +1 nivel
+    if (nivel > 50) nivel = 50;      // Máximo nivel 50
+    return nivel;
+  }
+
+
   @override
     void initState() {
       super.initState();
 
-      // Sumar monedas a UsuarioSesion
-      UsuarioSesion.monedas = (UsuarioSesion.monedas ?? 0) + widget.monedasGanadas;
+          // 1️⃣ SUMAR MONEDAS
+        UsuarioSesion.monedas =
+            (UsuarioSesion.monedas ?? 0) + widget.monedasGanadas;
 
+        // 2️⃣ SUMAR PUNTOS (esto es lo que te sube el nivel)
+        UsuarioSesion.puntos =
+            (UsuarioSesion.puntos ?? 0) + widget.monedasGanadas;
 
-      // Sumar monedas en Firestore
-      FirebaseFirestore.instance
-          .collection("usuario")
-          .doc(UsuarioSesion.email) // tu identificador único
-          .update({
-            "monedas": UsuarioSesion.monedas,
-          });
+        // 3️⃣ CALCULAR NIVEL SEGÚN PUNTOS
+        UsuarioSesion.nivel = calcularNivel(UsuarioSesion.puntos!);
 
+        // 4️⃣ GUARDAR EN FIRESTORE
+        FirebaseFirestore.instance
+            .collection("usuario")
+            .doc(UsuarioSesion.email)
+            .update({
+          "monedas": UsuarioSesion.monedas,
+          "puntos": UsuarioSesion.puntos,
+          "nivel": UsuarioSesion.nivel,
+        });
       // Espera 2 segundos y luego regresa
       Future.delayed(const Duration(seconds: 2), () {
         Navigator.pop(context); // vuelve a PreguntaScreen

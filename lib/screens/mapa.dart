@@ -307,7 +307,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 380,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(208, 450, "Deportes", 1);
+                            moverBotonGeneral(208, 450, "Literatura", 1);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -334,7 +334,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                             ),
                           ),
                           child: const Text(
-                            "Deportes",
+                            "Literatura",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize:
@@ -351,7 +351,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 660,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(177, 629, "Entretenimiento", 1);
+                            moverBotonGeneral(177, 629, "Biología", 1);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -378,7 +378,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                             ),
                           ),
                           child: const Text(
-                            "Entretenimiento",
+                            "Biología",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize:
@@ -395,7 +395,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 630,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(208, 700, "Curiosidades", 1);
+                            moverBotonGeneral(208, 700, "Gramatica", 1);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -422,7 +422,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                             ),
                           ),
                           child: const Text(
-                            "Curiosidades",
+                            "Gramatica",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize:
