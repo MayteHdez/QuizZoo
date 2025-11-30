@@ -45,13 +45,18 @@ class _MapaScreenState extends State<MapaScreen> {
 
   double generalTop = 177;
   double generalLeft = 131;
+  String botonTema = "Matemáticas"; // tema actual
+  int botonNivel = 1;
 
-  void moverBotonGeneral(double top, double left) {
+  void moverBotonGeneral(double top, double left, String tema, int nivel) {
     setState(() {
       generalTop = top;
       generalLeft = left;
+      botonTema = tema;
+      botonNivel = nivel;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +160,7 @@ class _MapaScreenState extends State<MapaScreen> {
                         left: 160,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(177, 131);
+                            moverBotonGeneral(177, 131, "Matemáticas", 1);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -182,7 +187,7 @@ class _MapaScreenState extends State<MapaScreen> {
                             ),
                           ),
                           child: const Text(
-                            "Tema 1",
+                            "Matemáticas",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize:
@@ -199,7 +204,7 @@ class _MapaScreenState extends State<MapaScreen> {
                         left: 130,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(208, 202);
+                            moverBotonGeneral(208, 202, "Geografía", 1);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -226,7 +231,7 @@ class _MapaScreenState extends State<MapaScreen> {
                             ),
                           ),
                           child: const Text(
-                            "Tema 2",
+                            "Geografía",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize:
@@ -243,7 +248,7 @@ class _MapaScreenState extends State<MapaScreen> {
                         left: 410,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(177, 379);
+                            moverBotonGeneral(177, 379, "Historia", 1);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -270,7 +275,7 @@ class _MapaScreenState extends State<MapaScreen> {
                             ),
                           ),
                           child: const Text(
-                            "Tema 3",
+                            "Historia",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize:
@@ -287,7 +292,7 @@ class _MapaScreenState extends State<MapaScreen> {
                         left: 380,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(208, 450);
+                            moverBotonGeneral(208, 450, "Deportes", 1);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -314,7 +319,7 @@ class _MapaScreenState extends State<MapaScreen> {
                             ),
                           ),
                           child: const Text(
-                            "Tema 4",
+                            "Deportes",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize:
@@ -331,7 +336,7 @@ class _MapaScreenState extends State<MapaScreen> {
                         left: 660,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(177, 629);
+                            moverBotonGeneral(177, 629, "Entretenimiento", 1);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -358,7 +363,7 @@ class _MapaScreenState extends State<MapaScreen> {
                             ),
                           ),
                           child: const Text(
-                            "Tema 5",
+                            "Entretenimiento",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize:
@@ -375,7 +380,7 @@ class _MapaScreenState extends State<MapaScreen> {
                         left: 630,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(208, 700);
+                            moverBotonGeneral(208, 700, "Curiosidades", 1);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -402,7 +407,7 @@ class _MapaScreenState extends State<MapaScreen> {
                             ),
                           ),
                           child: const Text(
-                            "Tema 6",
+                            "Curiosidades",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize:
@@ -425,13 +430,12 @@ class _MapaScreenState extends State<MapaScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) => PreguntaScreen(
-                                  nivel: 1,
-                                  tema: "Matemáticas",
+                                  nivel: botonNivel,
+                                  tema: botonTema,
                                   preguntasUsadas: [],
                                 ),
                               ),
                             );
-
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(
