@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/globo_dialogo.dart';
 import 'mapa.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../usuario_session.dart';
 
 class HistoriaPerro5 extends StatefulWidget {
   const HistoriaPerro5({super.key});
@@ -75,7 +77,7 @@ class _HistoriaPerro5State extends State<HistoriaPerro5> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   final nombre = _nombreController.text.trim();
 
                   if (nombre.isEmpty) {
@@ -85,20 +87,35 @@ class _HistoriaPerro5State extends State<HistoriaPerro5> {
                     return;
                   }
 
-                  // Mostrar mensaje
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Tu perrito se llama $nombre")),
-                  );
+                  // Guardar en memoria
+                  UsuarioSesion.nombreMascota = nombre;
 
-                  // Esperar y navegar enviando el nombre
-                  Future.delayed(const Duration(seconds: 1), () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MapaScreen(),
-                      ),
+                  try {
+                    // Guardar en Firestore
+                    await FirebaseFirestore.instance
+                        .collection("usuario")
+                        .doc(UsuarioSesion.email)
+                        .update({"nombre_m": nombre});
+
+                    // Mostrar mensaje
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Tu perrito se llama $nombre")),
                     );
-                  });
+
+                    // Esperar y navegar
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MapaScreen(),
+                        ),
+                      );
+                    });
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Error al guardar el nombre: $e")),
+                    );
+                  }
                 },
                 child: const Text("Guardar", style: TextStyle(fontSize: 22)),
               ),

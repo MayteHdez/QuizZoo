@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'historiagato.dart';
 import 'historiaconejo.dart';
 import 'historiaperro.dart';
+import '../usuario_session.dart';
+
 
 
 class RegistroMascotaScreen extends StatefulWidget {
@@ -19,6 +21,7 @@ class _RegistroMascotaScreenState extends State<RegistroMascotaScreen> {
 
   Future<void> _guardarMascota(String tipo) async {
     setState(() => mascotaSeleccionada = tipo);
+    UsuarioSesion.tipoMascota = tipo;
 
     try {
       await FirebaseFirestore.instance

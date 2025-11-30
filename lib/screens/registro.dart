@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // 🔹 Comentado para pruebas
 import 'registro_m.dart';
 import 'iniciar_sesion.dart';
+import '../usuario_session.dart';
 
 class RegistroScreen extends StatefulWidget {
   const RegistroScreen({super.key});
@@ -56,6 +57,18 @@ class _RegistroScreenState extends State<RegistroScreen> {
           "monedas": 0,
 
         });
+
+        UsuarioSesion.inicializar(
+          emailUsuario: email,
+          nombreUsuario: nombre,
+          contrasenaUsuario: password,
+          tipoM: "",         // todavía no elige mascota
+          nombreM: "",       // todavía no tiene nombre de mascota
+          monedasUsuario: 0,
+          nivelUsuario: 1,
+          puntosUsuario: 0,
+        );
+
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Registro exitoso")),
