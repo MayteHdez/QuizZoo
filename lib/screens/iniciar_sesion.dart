@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'registro.dart';
 import 'mapa.dart';
+import '../usuario_session.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -42,6 +44,18 @@ class _LoginScreenState extends State<LoginScreen> {
           _mostrarMensaje("Contraseña incorrecta");
         } else {
           _mostrarMensaje("Inicio de sesión exitoso");
+
+          // Guardar datos en memoria usando UsuarioSesion
+          UsuarioSesion.inicializar(
+            emailUsuario: email,
+            nombreUsuario: datos['nombre'] ?? "",
+            contrasenaUsuario: datos['contrasena'] ?? "",
+            tipoM: datos['tipo_m'] ?? "",
+            nombreM: datos['nombre_m'] ?? "",
+            monedasUsuario: datos['monedas'] ?? 0,
+            nivelUsuario: datos['nivel'] ?? 1,
+            puntosUsuario: datos['puntos'] ?? 0,
+          );
 
           // Ir a MapaScreen
           Navigator.push(
