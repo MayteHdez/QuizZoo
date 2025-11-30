@@ -1,170 +1,300 @@
 import 'package:flutter/material.dart';
+import 'package:quizapp/screens/alimentar.dart';
 import 'mapa.dart';
 import 'fondo.dart';
 import '../services/audio_global_service.dart';
 import '../services/history_music_service.dart';
 import '../usuario_session.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CasaScreen extends StatefulWidget {
-  const CasaScreen({super.key});
+const CasaScreen({super.key});
 
-  @override
-  State<CasaScreen> createState() => _CasaScreenState();
+@override
+State<CasaScreen> createState() => _CasaScreenState();
 }
 
 class _CasaScreenState extends State<CasaScreen> {
+String _fondoActual = "assets/imagenes_general/castillo.png"; // Fondo por defecto
+String _imagenMascota = "assets/gato/gato_feliz.png"; // Imagen de la mascota
 
-  @override
-  void initState() {
-    super.initState();
+@override
+void initState() {
+super.initState();
+_cargarFondoElegido();
+_checkHungerStatus();
+_saveLastVisitTime();
 
-    // Encender música global al entrar a Casa
-    AudioGlobalService().playGlobalMusic("musicaglobal.mp3");
+_setImagenMascota(); // Inicializa imagen según tipo de mascota
 
-    // Por si venías de una historia — apagar música de historia
-    HistoryMusicService().stopStoryMusic();
-  }
+HistoryMusicService().stopStoryMusic();
+AudioGlobalService().playGlobalMusic("musica/musicaglobal.mp3");
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/imagenes_general/castillo.png"),
-            fit: BoxFit.cover,
+}
+
+// ------------------------------------------------------------------------
+// 🔥 Inicializar imagen según tipo de mascota
+// ------------------------------------------------------------------------
+void _setImagenMascota() {
+if (UsuarioSesion.tipoMascota == "conejo") {
+_imagenMascota = "assets/conejo/conejo.png";
+} else if (UsuarioSesion.tipoMascota == "perro") {
+_imagenMascota = "assets/perro/perro.png";
+} else {
+_imagenMascota = "assets/gato/gato_feliz.png";
+}
+}
+
+// ------------------------------------------------------------------------
+// 🔥 Cargar fondo guardado
+// ------------------------------------------------------------------------
+void _cargarFondoElegido() async {
+final prefs = await SharedPreferences.getInstance();
+String? fondo = prefs.getString("fondoSeleccionado");
+if (fondo != null && mounted) {
+setState(() {
+_fondoActual = fondo;
+});
+}
+}
+
+// ------------------------------------------------------------------------
+// 🔥 Guardar última visita
+// ------------------------------------------------------------------------
+void _saveLastVisitTime() async {
+final prefs = await SharedPreferences.getInstance();
+prefs.setInt('lastVisit', DateTime.now().millisecondsSinceEpoch);
+}
+
+// ------------------------------------------------------------------------
+// 🔥 Revisar si han pasado 3 horas y actualizar mascota
+// ------------------------------------------------------------------------
+void _checkHungerStatus() async {
+final prefs = await SharedPreferences.getInstance();
+int? lastVisit = prefs.getInt('lastVisit');
+if (lastVisit == null) return;
+DateTime last = DateTime.fromMillisecondsSinceEpoch(lastVisit);
+DateTime now = DateTime.now();
+Duration diff = now.difference(last);
+
+if (diff.inHours >= 3) {
+  setState(() {
+    if (UsuarioSesion.tipoMascota == "conejo") {
+      _imagenMascota = "assets/conejo/conejoasustado.png";
+    } else if (UsuarioSesion.tipoMascota == "perro") {
+      _imagenMascota = "assets/perro/asustado.png";
+    } else {
+      _imagenMascota = "assets/gato/gato_triste.png";
+    }
+  });
+
+  _showHungerDialog();
+}
+
+}
+
+// ------------------------------------------------------------------------
+// 🔥 Pop-up de hambre
+// ------------------------------------------------------------------------
+void _showHungerDialog() {
+showDialog(
+context: context,
+barrierDismissible: true,
+builder: (context) {
+return AlertDialog(
+shape: RoundedRectangleBorder(
+borderRadius: BorderRadius.circular(20),
+),
+content: Column(
+mainAxisSize: MainAxisSize.min,
+children: [
+Image.asset(_imagenMascota, height: 120),
+const SizedBox(height: 10),
+const Text(
+"¡Estoy hambriento!",
+style: TextStyle(
+fontSize: 20,
+fontWeight: FontWeight.bold,
+color: Colors.red,
+),
+textAlign: TextAlign.center,
+),
+],
+),
+);
+},
+);
+}
+
+@override
+void dispose() {
+_saveLastVisitTime();
+super.dispose();
+}
+
+// ------------------------------------------------------------------------
+// 🔥 UI Principal
+// ------------------------------------------------------------------------
+@override
+Widget build(BuildContext context) {
+return Scaffold(
+body: Container(
+decoration: BoxDecoration(
+image: DecorationImage(
+image: AssetImage(_fondoActual),
+fit: BoxFit.cover,
+),
+),
+child: Column(
+children: [
+const SizedBox(height: 60),
+
+        // NIVEL Y MONEDAS
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 247, 107, 156),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.bar_chart, color: Colors.purple),
+                      const SizedBox(width: 6),
+                      Text(
+                        "Nivel: ${UsuarioSesion.nivel}",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 247, 107, 156),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.attach_money, color: Colors.purple),
+                      const SizedBox(width: 6),
+                      Text(
+                        "Monedas: ${UsuarioSesion.monedas}",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        child: Column(
-          children: [
-            // Encabezado
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 247, 107, 156),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.bar_chart, color: Colors.purple), // los Iconos sí pueden ser const
-                          const SizedBox(width: 6),
-                          Text(
-                            "Nivel: ${UsuarioSesion.nivel}", // ❌ ahora dinámico, sin const
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
 
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 247, 107, 156),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.attach_money, color: Colors.purple),
-                          const SizedBox(width: 6),
-                          Text(
-                            "Monedas: ${UsuarioSesion.monedas}",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+        const SizedBox(height: 210),
 
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        // MASCOTA INTERACTIVA
+        GestureDetector(
+          onTap: () async {
+            // Al volver de alimentar, la mascota puede volver feliz
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AlimentarScreen()),
+            );
 
-            const SizedBox(height: 270),
-            Image.asset(
-              "assets/gato/gato_feliz.png",
-              height: 300,
-            ),
-            const SizedBox(height: 25),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const MapaScreen()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orangeAccent,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: const Text(
-                        "Jugar",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const FondoScreen()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orangeAccent,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: const Text(
-                        "Cambiar fondo",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            if (result == true) {
+              setState(() {
+                _setImagenMascota(); // vuelve a la imagen feliz
+                _saveLastVisitTime(); // reinicia el tiempo de hambre
+              });
+            }
+          },
+          child: Image.asset(
+            _imagenMascota,
+            height: 300,
+          ),
         ),
-      ),
-    );
-  }
+
+        const SizedBox(height: 25),
+
+        // BOTONES
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const MapaScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orangeAccent,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    "Jugar",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const FondoScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orangeAccent,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    "Cambiar fondo",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  ),
+);
+}
 }

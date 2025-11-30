@@ -14,17 +14,33 @@ class MapaScreen extends StatefulWidget {
   State<MapaScreen> createState() => _MapaScreenState();
 }
 
-class _MapaScreenState extends State<MapaScreen> {
+class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
   final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
-
+    WidgetsBinding.instance.addObserver(this);
     // Detener música de historia
     HistoryMusicService().stopStoryMusic();
 
     // Encender música global
     AudioGlobalService().playGlobalMusic("musica/musicaglobal.mp3");
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      // La app volvió al primer plano
+      AudioGlobalService().playGlobalMusic("musica/musicaglobal.mp3");
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   void _scrollLeft() {
@@ -56,7 +72,6 @@ class _MapaScreenState extends State<MapaScreen> {
       botonNivel = nivel;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +112,7 @@ class _MapaScreenState extends State<MapaScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                                              ],
+                      ],
                     ),
                   ),
                 ),
@@ -426,14 +441,15 @@ class _MapaScreenState extends State<MapaScreen> {
                         left: generalLeft,
                         child: ElevatedButton(
                           onPressed: () {
-                             Navigator.push(
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => PreguntaScreen(
-                                  nivel: botonNivel,
-                                  tema: botonTema,
-                                  preguntasUsadas: [],
-                                ),
+                                builder:
+                                    (_) => PreguntaScreen(
+                                      nivel: botonNivel,
+                                      tema: botonTema,
+                                      preguntasUsadas: [],
+                                    ),
                               ),
                             );
                           },
@@ -500,7 +516,11 @@ class _MapaScreenState extends State<MapaScreen> {
                       );
                     },
                     child: Image.asset(
-                      "assets/gato/gato.png",
+                      UsuarioSesion.tipoMascota == "conejo"
+                          ? "assets/conejo/conejo.png"
+                          : UsuarioSesion.tipoMascota == "perro"
+                          ? "assets/perro/perro.png"
+                          : "assets/gato/gato_feliz.png", // valor por defecto
                       height: MediaQuery.of(context).size.height * 0.22,
                     ),
                   ),

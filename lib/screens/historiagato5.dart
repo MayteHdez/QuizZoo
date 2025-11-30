@@ -4,7 +4,6 @@ import 'mapa.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../usuario_session.dart';
 
-
 class HistoriaGato5 extends StatefulWidget {
   const HistoriaGato5({super.key});
 
@@ -14,6 +13,7 @@ class HistoriaGato5 extends StatefulWidget {
 
 class _HistoriaGato5State extends State<HistoriaGato5> {
   final TextEditingController _nombreController = TextEditingController();
+  bool _guardando = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class _HistoriaGato5State extends State<HistoriaGato5> {
             child: Image.asset('assets/gato/finalfeliz.png', fit: BoxFit.cover),
           ),
 
-          // Globo de diálogo
+          // Globo
           const Positioned(
             top: 70,
             left: 20,
@@ -33,7 +33,7 @@ class _HistoriaGato5State extends State<HistoriaGato5> {
             child: GloboDialogo(texto: "¡Ahora dale un nombre a tu gatito!"),
           ),
 
-          // Imagen del gato
+          // Imagen del perro
           Positioned(
             top: 210,
             left: 0,
@@ -53,6 +53,9 @@ class _HistoriaGato5State extends State<HistoriaGato5> {
                 hintText: "Escribe el nombre aquí",
                 filled: true,
                 fillColor: Colors.white.withOpacity(0.9),
+                errorText: _guardando && _nombreController.text.trim().isEmpty
+                    ? "Debes escribir un nombre"
+                    : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide.none,
@@ -61,7 +64,7 @@ class _HistoriaGato5State extends State<HistoriaGato5> {
             ),
           ),
 
-          // Botón Guardar
+          // Botón guardar
           Positioned(
             bottom: 70,
             left: 0,
@@ -78,48 +81,57 @@ class _HistoriaGato5State extends State<HistoriaGato5> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                onPressed: () async {
-                  final nombre = _nombreController.text.trim();
+                onPressed: _guardando
+                    ? null
+                    : () async {
+                        String nombre = _nombreController.text.trim();
 
-                  if (nombre.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Escribe un nombre")),
-                    );
-                    return;
-                  }
+                        setState(() => _guardando = true);
 
-                  // Guardar en memoria
-                  UsuarioSesion.nombreMascota = nombre;
+                        if (nombre.isEmpty) {
+                          setState(() => _guardando = false);
+                          return; // activa la validación visual
+                        }
 
-                  try {
-                    // Guardar en Firestore
-                    await FirebaseFirestore.instance
-                        .collection("usuario")
-                        .doc(UsuarioSesion.email)
-                        .update({"nombre_m": nombre});
+                        try {
+                          UsuarioSesion.nombreMascota = nombre;
 
-                    // Mostrar mensaje
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Tu gatito se llama $nombre")),
-                    );
+                          // GUARDAR (CORREGIDO)
+                          await FirebaseFirestore.instance
+                              .collection("usuario")
+                              .doc(UsuarioSesion.email)
+                              .set(
+                            {"nombre_m": nombre},
+                            SetOptions(merge: true),
+                          );
 
-                    // Esperar y navegar
-                    Future.delayed(const Duration(seconds: 1), () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MapaScreen(),
-                        ),
-                      );
-                    });
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Error al guardar el nombre: $e")),
-                    );
-                  }
-                },
+                          // Mensaje
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Tu gatito se llama $nombre"),
+                            ),
+                          );
 
-                child: const Text("Guardar", style: TextStyle(fontSize: 22)),
+                          // Navegar
+                          await Future.delayed(const Duration(seconds: 1));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MapaScreen(),
+                            ),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text("Error al guardar nombre: $e")),
+                          );
+                        }
+
+                        setState(() => _guardando = false);
+                      },
+                child: _guardando
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text("Guardar", style: TextStyle(fontSize: 22)),
               ),
             ),
           ),
