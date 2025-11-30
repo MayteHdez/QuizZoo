@@ -24,7 +24,7 @@ class _RegistroMascotaScreenState extends State<RegistroMascotaScreen> {
       await FirebaseFirestore.instance
           .collection("usuario")
           .doc(widget.email)
-          .update({"Tipo_m": tipo});
+          .update({"tipo_m": tipo});
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error al guardar mascota: $e")),

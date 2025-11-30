@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // 🔹 Comentado para pruebas
+// import 'package:cloud_firestore/cloud_firestore.dart'; // 🔹 Comentado para pruebas
 import 'registro_m.dart';
 import 'iniciar_sesion.dart';
 
@@ -16,7 +16,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance; // 🔹 Comentado
+  // final FirebaseFirestore _firestore = FirebaseFirestore.instance; // 🔹 Comentado
 
   bool isLoading = false;
 
@@ -41,32 +41,34 @@ class _RegistroScreenState extends State<RegistroScreen> {
     });
 
     try {
-      
+      // 🔸 Comentamos toda la parte de Firestore para probar solo la navegación
+
+      /*
       var usuarioExistente = await _firestore.collection("usuario").doc(email).get();
 
       if (usuarioExistente.exists) {
         _mostrarError("El correo ya está registrado");
       } else {
         await _firestore.collection("usuario").doc(email).set({
-          "nombre": nombre,
-          "contraseña": password,         
-          "nombre_m": "",
-          "tipo_m": "",
-          "puntos": 0,
-          "nivel": 1,
-          "monedas": 0,
+          "Id": email,
+          "Nombre": nombre,
+          "Nombre_m": "",
+          "Tipo_m": "",
+          "Puntos": 0,
+          "Nivel": 1,
+          "Monedas": 0,
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Registro exitoso")),
         );
       }
-      
+      */
 
       // 🔹 Simulación de éxito directo
-      /*ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Registro simulado exitoso")),
-      );*/
+      );
 
       // 🔹 Navegar a selección de mascota (sin guardar en Firestore)
       Navigator.pushReplacement(

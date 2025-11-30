@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'config.dart';
 import 'mercado.dart';
 import 'pregunta.dart';
-import'casa.dart';
+import 'casa.dart';
+import '../services/audio_global_service.dart';
+import '../services/history_music_service.dart';
 
 class MapaScreen extends StatefulWidget {
   const MapaScreen({super.key});
@@ -13,6 +15,16 @@ class MapaScreen extends StatefulWidget {
 
 class _MapaScreenState extends State<MapaScreen> {
   final ScrollController _scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+
+    // Detener música de historia
+    HistoryMusicService().stopStoryMusic();
+
+    // Encender música global
+    AudioGlobalService().playGlobalMusic("musicaglobal.mp3");
+  }
 
   void _scrollLeft() {
     _scrollController.animateTo(
@@ -40,7 +52,6 @@ class _MapaScreenState extends State<MapaScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +61,10 @@ class _MapaScreenState extends State<MapaScreen> {
           SizedBox(height: 25),
           // Encabezado: Nivel y Monedas
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15), // margen lateral leve
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 15,
+            ), // margen lateral leve
             child: Row(
               children: [
                 Expanded(
@@ -59,9 +73,13 @@ class _MapaScreenState extends State<MapaScreen> {
                       color: const Color.fromARGB(255, 247, 107, 156),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // centra el contenido
+                      mainAxisAlignment:
+                          MainAxisAlignment.center, // centra el contenido
                       children: [
                         const Icon(Icons.bar_chart, color: Colors.purple),
                         const SizedBox(width: 6),
@@ -84,7 +102,10 @@ class _MapaScreenState extends State<MapaScreen> {
                       color: const Color.fromARGB(255, 247, 107, 156),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -117,182 +138,279 @@ class _MapaScreenState extends State<MapaScreen> {
                   scrollDirection: Axis.horizontal,
                   child: Stack(
                     children: [
-                       SizedBox( // 👈 le da un alto fijo al mapa y a todo lo que está encima
-                          height: MediaQuery.of(context).size.height * 0.6,
-                          child: Image.asset(
-                            "assets/imagenes_general/mapa.png",
-                            fit: BoxFit.cover,
-                          ),
+                      SizedBox(
+                        // 👈 le da un alto fijo al mapa y a todo lo que está encima
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: Image.asset(
+                          "assets/imagenes_general/mapa.png",
+                          fit: BoxFit.cover,
                         ),
+                      ),
 
                       // Botones sobre el mapa:
                       // Botón Tema 1
-                     Positioned(
-                      top: 175,
-                      left: 160,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          moverBotonGeneral(177, 131);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
-                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                      Positioned(
+                        top: 175,
+                        left: 160,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            moverBotonGeneral(177, 131);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              222,
+                              79,
+                              247,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ), // 👈 más pequeño
+                            minimumSize: const Size(
+                              50,
+                              30,
+                            ), // 👈 tamaño mínimo más chico
+                            tapTargetSize:
+                                MaterialTapTargetSize
+                                    .shrinkWrap, // 👈 evita agrandado automático
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                10,
+                              ), // bordes redondeados pero suaves
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          "Tema 1",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 13, // 👈 texto un poco más pequeño también
-                            fontWeight: FontWeight.bold,
+                          child: const Text(
+                            "Tema 1",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                                  13, // 👈 texto un poco más pequeño también
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    //Boton Tema 2
-                    Positioned(
-                      top: 210,
-                      left: 130,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          moverBotonGeneral(208, 202);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
-                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                      //Boton Tema 2
+                      Positioned(
+                        top: 210,
+                        left: 130,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            moverBotonGeneral(208, 202);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              222,
+                              79,
+                              247,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ), // 👈 más pequeño
+                            minimumSize: const Size(
+                              50,
+                              30,
+                            ), // 👈 tamaño mínimo más chico
+                            tapTargetSize:
+                                MaterialTapTargetSize
+                                    .shrinkWrap, // 👈 evita agrandado automático
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                10,
+                              ), // bordes redondeados pero suaves
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          "Tema 2",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 13, // 👈 texto un poco más pequeño también
-                            fontWeight: FontWeight.bold,
+                          child: const Text(
+                            "Tema 2",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                                  13, // 👈 texto un poco más pequeño también
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-// Botón Tema 3
-                     Positioned(
-                      top: 175,
-                      left: 410,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          moverBotonGeneral(177, 379);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
-                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                      // Botón Tema 3
+                      Positioned(
+                        top: 175,
+                        left: 410,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            moverBotonGeneral(177, 379);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              222,
+                              79,
+                              247,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ), // 👈 más pequeño
+                            minimumSize: const Size(
+                              50,
+                              30,
+                            ), // 👈 tamaño mínimo más chico
+                            tapTargetSize:
+                                MaterialTapTargetSize
+                                    .shrinkWrap, // 👈 evita agrandado automático
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                10,
+                              ), // bordes redondeados pero suaves
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          "Tema 3",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 13, // 👈 texto un poco más pequeño también
-                            fontWeight: FontWeight.bold,
+                          child: const Text(
+                            "Tema 3",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                                  13, // 👈 texto un poco más pequeño también
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    //Boton Tema 4
-                    Positioned(
-                      top: 210,
-                      left: 380,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          moverBotonGeneral(208, 450);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
-                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                      //Boton Tema 4
+                      Positioned(
+                        top: 210,
+                        left: 380,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            moverBotonGeneral(208, 450);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              222,
+                              79,
+                              247,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ), // 👈 más pequeño
+                            minimumSize: const Size(
+                              50,
+                              30,
+                            ), // 👈 tamaño mínimo más chico
+                            tapTargetSize:
+                                MaterialTapTargetSize
+                                    .shrinkWrap, // 👈 evita agrandado automático
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                10,
+                              ), // bordes redondeados pero suaves
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          "Tema 4",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 13, // 👈 texto un poco más pequeño también
-                            fontWeight: FontWeight.bold,
+                          child: const Text(
+                            "Tema 4",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                                  13, // 👈 texto un poco más pequeño también
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    // Botón Tema 5
-                     Positioned(
-                      top: 175,
-                      left: 660,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          moverBotonGeneral(177, 629);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
-                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                      // Botón Tema 5
+                      Positioned(
+                        top: 175,
+                        left: 660,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            moverBotonGeneral(177, 629);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              222,
+                              79,
+                              247,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ), // 👈 más pequeño
+                            minimumSize: const Size(
+                              50,
+                              30,
+                            ), // 👈 tamaño mínimo más chico
+                            tapTargetSize:
+                                MaterialTapTargetSize
+                                    .shrinkWrap, // 👈 evita agrandado automático
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                10,
+                              ), // bordes redondeados pero suaves
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          "Tema 5",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 13, // 👈 texto un poco más pequeño también
-                            fontWeight: FontWeight.bold,
+                          child: const Text(
+                            "Tema 5",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                                  13, // 👈 texto un poco más pequeño también
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    //Boton Tema 6
-                    Positioned(
-                      top: 210,
-                      left: 630,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          moverBotonGeneral(208, 700);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 222, 79, 247),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 👈 más pequeño
-                          minimumSize: const Size(50, 30), // 👈 tamaño mínimo más chico
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 👈 evita agrandado automático
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // bordes redondeados pero suaves
+                      //Boton Tema 6
+                      Positioned(
+                        top: 210,
+                        left: 630,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            moverBotonGeneral(208, 700);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              222,
+                              79,
+                              247,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ), // 👈 más pequeño
+                            minimumSize: const Size(
+                              50,
+                              30,
+                            ), // 👈 tamaño mínimo más chico
+                            tapTargetSize:
+                                MaterialTapTargetSize
+                                    .shrinkWrap, // 👈 evita agrandado automático
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                10,
+                              ), // bordes redondeados pero suaves
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          "Tema 6",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 13, // 👈 texto un poco más pequeño también
-                            fontWeight: FontWeight.bold,
+                          child: const Text(
+                            "Tema 6",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                                  13, // 👈 texto un poco más pequeño también
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
                       //Boton general
                       AnimatedPositioned(
@@ -302,13 +420,17 @@ class _MapaScreenState extends State<MapaScreen> {
                         left: generalLeft,
                         child: ElevatedButton(
                           onPressed: () {
-                             Navigator.push(
+                            Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => PreguntaScreen()),
+                              MaterialPageRoute(
+                                builder: (context) => PreguntaScreen(),
+                              ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFFC8D0).withOpacity(0.8),
+                            backgroundColor: const Color(
+                              0xFFFFC8D0,
+                            ).withOpacity(0.8),
                             shape: const CircleBorder(),
                             padding: const EdgeInsets.all(4),
                             minimumSize: const Size(30, 30),
@@ -322,9 +444,6 @@ class _MapaScreenState extends State<MapaScreen> {
                           ),
                         ),
                       ),
-
-
-
                     ],
                   ),
                 ),
@@ -351,108 +470,112 @@ class _MapaScreenState extends State<MapaScreen> {
             ],
           ),
 
-
           // Fondo rosa con gato + botones
-Expanded(
-  child: Container(
-    width: double.infinity,
-    color: const Color(0xFFFFC8D0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        
-        // GATO
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CasaScreen()),
-            );
-          },
-          child: Image.asset(
-            "assets/gato/gato.png",
-            height: MediaQuery.of(context).size.height * 0.22,
-          ),
-        ),
-
-        // BOTONES ANCHOS
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                
-                // 🔥 BOTÓN ANCHO
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              color: const Color(0xFFFFC8D0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // GATO
+                  GestureDetector(
+                    onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ConfigScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const CasaScreen(),
+                        ),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orangeAccent,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+                    child: Image.asset(
+                      "assets/gato/gato.png",
+                      height: MediaQuery.of(context).size.height * 0.22,
                     ),
-                    child: const Text(
-                      "Configuración",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                  ),
+
+                  // BOTONES ANCHOS
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // 🔥 BOTÓN ANCHO
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ConfigScreen(),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orangeAccent,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 15,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              child: const Text(
+                                "Configuración",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          // 🔥 SEGUNDO BOTÓN ANCHO
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => const IngredientesScreen(),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orangeAccent,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 15,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              child: const Text(
+                                "Mercado",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-
-                const SizedBox(height: 10),
-
-                // 🔥 SEGUNDO BOTÓN ANCHO
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const IngredientesScreen()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orangeAccent,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: const Text(
-                      "Mercado",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  ),
-)
-
-
-
-
         ],
       ),
     );

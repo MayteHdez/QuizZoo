@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
 import 'historiagato2.dart';
+import '../services/history_music_service.dart';
+import '../services/audio_global_service.dart';
 
-
-class HistoriaGato extends StatelessWidget {
+class HistoriaGato extends StatefulWidget {
   const HistoriaGato({super.key});
+
+  @override
+  State<HistoriaGato> createState() => _HistoriaGatoState();
+}
+
+class _HistoriaGatoState extends State<HistoriaGato> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Detener música de historia
+    AudioGlobalService().stopGlobal();
+
+    // Encender música global
+    HistoryMusicService().playStoryMusic("musicagato.mp3");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,10 +29,7 @@ class HistoriaGato extends StatelessWidget {
         children: [
           // Fondo
           Positioned.fill(
-            child: Image.asset(
-              'assets/gato/GATOCALLE.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/gato/GATOCALLE.png', fit: BoxFit.cover),
           ),
 
           // Texto superior
@@ -46,7 +60,8 @@ class HistoriaGato extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 40, vertical: 16,
+                    horizontal: 40,
+                    vertical: 16,
                   ),
                 ),
                 onPressed: () {
@@ -64,4 +79,3 @@ class HistoriaGato extends StatelessWidget {
     );
   }
 }
-
