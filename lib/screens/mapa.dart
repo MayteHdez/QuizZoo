@@ -5,6 +5,7 @@ import 'pregunta.dart';
 import 'casa.dart';
 import '../services/audio_global_service.dart';
 import '../services/history_music_service.dart';
+import '../usuario_session.dart';
 
 class MapaScreen extends StatefulWidget {
   const MapaScreen({super.key});
@@ -83,15 +84,15 @@ class _MapaScreenState extends State<MapaScreen> {
                       children: [
                         const Icon(Icons.bar_chart, color: Colors.purple),
                         const SizedBox(width: 6),
-                        const Text(
-                          "Nivel",
+                        Text(
+                          "Nivel: ${UsuarioSesion.nivel}",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
+                                              ],
                     ),
                   ),
                 ),
@@ -111,8 +112,8 @@ class _MapaScreenState extends State<MapaScreen> {
                       children: [
                         const Icon(Icons.attach_money, color: Colors.purple),
                         const SizedBox(width: 6),
-                        const Text(
-                          "Monedas",
+                        Text(
+                          "Monedas: ${UsuarioSesion.monedas}",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../usuario_session.dart';
 
 class IngredientesScreen extends StatefulWidget {
   const IngredientesScreen({super.key});
@@ -51,8 +52,8 @@ class _IngredientesScreenState extends State<IngredientesScreen> {
                       children: [
                         const Icon(Icons.bar_chart, color: Colors.purple),
                         const SizedBox(width: 6),
-                        const Text(
-                          "Nivel",
+                        Text(
+                          "Nivel: ${UsuarioSesion.nivel}",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
@@ -76,8 +77,8 @@ class _IngredientesScreenState extends State<IngredientesScreen> {
                       children: [
                         const Icon(Icons.attach_money, color: Colors.purple),
                         const SizedBox(width: 6),
-                        const Text(
-                          "Monedas",
+                        Text(
+                          "Monedas: ${UsuarioSesion.monedas}",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,

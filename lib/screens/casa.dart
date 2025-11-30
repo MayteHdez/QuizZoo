@@ -3,6 +3,7 @@ import 'mapa.dart';
 import 'fondo.dart';
 import '../services/audio_global_service.dart';
 import '../services/history_music_service.dart';
+import '../usuario_session.dart';
 
 class CasaScreen extends StatefulWidget {
   const CasaScreen({super.key});
@@ -50,11 +51,11 @@ class _CasaScreenState extends State<CasaScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.bar_chart, color: Colors.purple),
-                          SizedBox(width: 6),
+                        children: [
+                          const Icon(Icons.bar_chart, color: Colors.purple), // los Iconos sí pueden ser const
+                          const SizedBox(width: 6),
                           Text(
-                            "Nivel",
+                            "Nivel: ${UsuarioSesion.nivel}", // ❌ ahora dinámico, sin const
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.white,
@@ -62,6 +63,7 @@ class _CasaScreenState extends State<CasaScreen> {
                             ),
                           ),
                         ],
+
                       ),
                     ),
                   ),
@@ -75,11 +77,11 @@ class _CasaScreenState extends State<CasaScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.attach_money, color: Colors.purple),
-                          SizedBox(width: 6),
+                        children: [
+                          const Icon(Icons.attach_money, color: Colors.purple),
+                          const SizedBox(width: 6),
                           Text(
-                            "Monedas",
+                            "Monedas: ${UsuarioSesion.monedas}",
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.white,
@@ -87,6 +89,7 @@ class _CasaScreenState extends State<CasaScreen> {
                             ),
                           ),
                         ],
+
                       ),
                     ),
                   ),
