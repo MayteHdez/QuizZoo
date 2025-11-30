@@ -1,22 +1,40 @@
 import 'package:flutter/material.dart';
+import '../usuario_session.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CorrectaScreen extends StatefulWidget {
-  const CorrectaScreen({super.key});
+  final int monedasGanadas;
+
+  const CorrectaScreen({super.key, required this.monedasGanadas});
 
   @override
   State<CorrectaScreen> createState() => _CorrectaScreenState();
 }
 
+
 class _CorrectaScreenState extends State<CorrectaScreen> {
   @override
-  void initState() {
-    super.initState();
+    void initState() {
+      super.initState();
 
-    // Espera 2 segundos y luego regresa a la pantalla anterior
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pop(context); // vuelve a PreguntaScreen
-    });
-  }
+      // Sumar monedas a UsuarioSesion
+      UsuarioSesion.monedas = (UsuarioSesion.monedas ?? 0) + widget.monedasGanadas;
+
+
+      // Sumar monedas en Firestore
+      FirebaseFirestore.instance
+          .collection("usuario")
+          .doc(UsuarioSesion.email) // tu identificador único
+          .update({
+            "monedas": UsuarioSesion.monedas,
+          });
+
+      // Espera 2 segundos y luego regresa
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.pop(context); // vuelve a PreguntaScreen
+      });
+    }
+
 
   @override
   Widget build(BuildContext context) {

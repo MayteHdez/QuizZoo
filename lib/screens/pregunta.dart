@@ -70,15 +70,25 @@ class _PreguntaScreenState extends State<PreguntaScreen> {
   }
 
   void responder(bool correcta) {
-    // Guardar que ya usamos esta pregunta
-    widget.preguntasUsadas.add(docId);
+  // Guardar que ya usamos esta pregunta
+  widget.preguntasUsadas.add(docId);
 
-    // Navegar según respuesta
-    final pantalla = correcta ? const CorrectaScreen() : const IncorrectaScreen();
+  // 'pregunta' tiene el campo "monedas"
+  final int monedasGanadas = pregunta?["monedas"] ?? 0;
 
-    Navigator.push(context, MaterialPageRoute(builder: (_) => pantalla))
-        .then((_) => cargarPregunta()); // recargar pregunta al volver
-  }
+  // Navegar según respuesta
+  final pantalla = correcta
+      ? CorrectaScreen(monedasGanadas: monedasGanadas)
+      : const IncorrectaScreen();
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => pantalla),
+  ).then((_) {
+    cargarPregunta(); // recargar pregunta cuando se cierra correcta/incorrecta
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
