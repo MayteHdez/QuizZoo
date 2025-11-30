@@ -19,7 +19,7 @@ class _HistoriaGatoState extends State<HistoriaGato> {
     AudioGlobalService().stopGlobal();
 
     // Encender música global
-    HistoryMusicService().playStoryMusic("musicagato.mp3");
+    HistoryMusicService().playStoryMusic("musica/musicagato.mp3");
   }
 
   @override

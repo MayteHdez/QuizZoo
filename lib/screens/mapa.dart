@@ -23,7 +23,7 @@ class _MapaScreenState extends State<MapaScreen> {
     HistoryMusicService().stopStoryMusic();
 
     // Encender música global
-    AudioGlobalService().playGlobalMusic("musicaglobal.mp3");
+    AudioGlobalService().playGlobalMusic("musica/musicaglobal.mp3");
   }
 
   void _scrollLeft() {

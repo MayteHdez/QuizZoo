@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import '../widgets/globo_dialogo.dart';
 import 'mapa.dart';
 
-class HistoriaGato5 extends StatefulWidget {
-  const HistoriaGato5({super.key});
+class HistoriaConejo5 extends StatefulWidget {
+  const HistoriaConejo5({super.key});
 
   @override
-  State<HistoriaGato5> createState() => _HistoriaGato5State();
+  State<HistoriaConejo5> createState() => _HistoriaConejo5State();
 }
 
-class _HistoriaGato5State extends State<HistoriaGato5> {
+class _HistoriaConejo5State extends State<HistoriaConejo5> {
   final TextEditingController _nombreController = TextEditingController();
 
   @override
@@ -19,7 +19,7 @@ class _HistoriaGato5State extends State<HistoriaGato5> {
         children: [
           // Fondo
           Positioned.fill(
-            child: Image.asset('assets/gato/finalfeliz.png', fit: BoxFit.cover),
+            child: Image.asset('assets/conejo/finalfeliz.png', fit: BoxFit.cover),
           ),
 
           // Globo de diálogo
@@ -27,15 +27,15 @@ class _HistoriaGato5State extends State<HistoriaGato5> {
             top: 70,
             left: 20,
             right: 20,
-            child: GloboDialogo(texto: "¡Ahora dale un nombre a tu gatito!"),
+            child: GloboDialogo(texto: "¡Ahora dale un nombre a tu conejito!"),
           ),
 
-          // Imagen del gato
+          // Imagen del conejo
           Positioned(
             top: 210,
             left: 0,
             right: 0,
-            child: Image.asset('assets/gato/gato_feliz.png', height: 270),
+            child: Image.asset('assets/conejo/conejo.png', height: 270),
           ),
 
           // Campo de texto
@@ -87,7 +87,7 @@ class _HistoriaGato5State extends State<HistoriaGato5> {
 
                   // Mostrar mensaje
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Tu gatito se llama $nombre")),
+                    SnackBar(content: Text("Tu conejo se llama $nombre")),
                   );
 
                   // Esperar y navegar enviando el nombre
