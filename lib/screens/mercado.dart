@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../usuario_session.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'mapa.dart';
+
 
 class IngredientesScreen extends StatefulWidget {
   const IngredientesScreen({super.key});
@@ -117,7 +120,31 @@ class _IngredientesScreenState extends State<IngredientesScreen> {
 
                       // 🔘 BOTÓN DEL PRECIO
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          final precio = ingredientes[i]["precio"] as int;
+
+                          if ((UsuarioSesion.monedas ?? 0) >= precio) {
+                            // Restar monedas
+                            UsuarioSesion.monedas = (UsuarioSesion.monedas ?? 0) - precio;
+
+                            // Actualizar la UI
+                            setState(() {});
+
+                            // Opcional: guardar en Firestore si quieres persistir
+                             FirebaseFirestore.instance
+                                 .collection("usuario")
+                                 .doc(UsuarioSesion.email)
+                                 .update({"monedas": UsuarioSesion.monedas});
+                          } else {
+                            // Mostrar mensaje de que no tiene suficientes monedas
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Upss, no tienes suficientes monedas 😅"),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange.shade400,
                           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -139,22 +166,52 @@ class _IngredientesScreenState extends State<IngredientesScreen> {
                 },
               ),
             ),
-
+           
             // 🧺 CESTA + 🐱 GATITO
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/imagenes_general/canasta.png",
-                  height: 100,
-                ),
-                const SizedBox(width: 20), // separa las imágenes
-                Image.asset(
-                  "assets/gato/gato.png",
-                  height: 130,
-                ),
-              ],
-            ),
+          Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    Image.asset(
+      "assets/imagenes_general/canasta.png",
+      height: 100,
+    ),
+    const SizedBox(width: 20),
+    Image.asset(
+      "assets/gato/gato.png",
+      height: 130,
+    ),
+    const SizedBox(width: 20),
+    // Botón Jugar con tamaño controlado
+    SizedBox(
+      height: 50, // altura del botón
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MapaScreen()),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.orangeAccent,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+        child: const Text(
+          "Jugar",
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    ),
+  ],
+),
+
                       ],
         ),
       ),

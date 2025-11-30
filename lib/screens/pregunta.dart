@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'correcta.dart';
 import 'incorrecta.dart';
+import 'mapa.dart';
 
 class PreguntaScreen extends StatefulWidget {
   final int nivel;
@@ -46,10 +47,16 @@ class _PreguntaScreenState extends State<PreguntaScreen> {
           .toList();
 
       if (disponibles.isEmpty) {
-        // Ya no hay preguntas → regresar
-        if (mounted) Navigator.pop(context);
+        // Ya no hay preguntas → ir a MapaScreen
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MapaScreen()),
+          );
+        }
         return;
       }
+
 
       // Escoger una al azar
       disponibles.shuffle();
