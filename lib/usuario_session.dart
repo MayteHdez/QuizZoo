@@ -15,6 +15,8 @@ class UsuarioSesion {
   static int? nivel;
   static int? puntos;
 
+  static int dificultadSeleccionada = 1;
+
   /// Inicializar todos los valores desde Firestore o registro
   static void inicializar({
     required String emailUsuario,

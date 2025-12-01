@@ -64,6 +64,74 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
   String botonTema = "Matemáticas"; // tema actual
   int botonNivel = 1;
 
+  int selectedDificultad = 1;
+
+  final Map<int, int> dificultadMinimaNivel = {
+    1: 1,
+    2: 5,
+    3: 10,
+    4: 15,
+  };
+
+  void _abrirSelectorDificultad() async {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 6),
+              Text(
+                "Selecciona dificultad",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.purple[800],
+                ),
+              ),
+              const SizedBox(height: 8),
+              for (int d = 1; d <= 4; d++)
+                ListTile(
+                  leading: CircleAvatar(
+                    child: Text("$d"),
+                    radius: 14,
+                  ),
+                  title: Text("Dificultad $d"),
+                  subtitle: (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!
+                      ? null
+                      : Text(
+                          "Se desbloquea en nivel ${dificultadMinimaNivel[d]}",
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                  trailing: (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!
+                      ? (selectedDificultad == d
+                          ? const Icon(Icons.check_circle, color: Colors.green)
+                          : null)
+                      : const Icon(Icons.lock, color: Colors.grey),
+                  enabled: (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!,
+                  onTap: (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!
+                      ? () {
+                          setState(() {
+                            selectedDificultad = d;
+                          });
+                          Navigator.pop(context);
+                        }
+                      : null,
+                ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
   void moverBotonGeneral(double top, double left, String tema, int nivel) {
     setState(() {
       generalTop = top;
@@ -175,7 +243,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 160,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(177, 131, "Matemáticas", 1);
+                            moverBotonGeneral(177, 131, "Matemáticas", UsuarioSesion.dificultadSeleccionada);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -219,7 +287,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 130,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(208, 202, "Geografía", 1);
+                            moverBotonGeneral(208, 202, "Geografía", UsuarioSesion.dificultadSeleccionada);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -263,7 +331,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 410,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(177, 379, "Historia", 1);
+                            moverBotonGeneral(177, 379, "Historia", UsuarioSesion.dificultadSeleccionada);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -307,7 +375,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 380,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(208, 450, "Literatura", 1);
+                            moverBotonGeneral(208, 450, "Literatura", UsuarioSesion.dificultadSeleccionada);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -351,7 +419,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 660,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(177, 629, "Biología", 1);
+                            moverBotonGeneral(177, 629, "Biología", UsuarioSesion.dificultadSeleccionada);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -395,7 +463,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 630,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(208, 700, "Gramatica", 1);
+                            moverBotonGeneral(208, 700, "Gramatica", UsuarioSesion.dificultadSeleccionada);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -441,12 +509,13 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: generalLeft,
                         child: ElevatedButton(
                           onPressed: () {
+                            UsuarioSesion.dificultadSeleccionada = selectedDificultad;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder:
                                     (_) => PreguntaScreen(
-                                      nivel: botonNivel,
+                                      nivel: selectedDificultad,
                                       tema: botonTema,
                                       preguntasUsadas: [],
                                     ),
@@ -532,7 +601,41 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // 🔥 BOTÓN ANCHO
+                          // Botón de Dificultad (pequeño)
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _abrirSelectorDificultad,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.deepPurpleAccent,
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.speed, color: Colors.white),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "Dificultad: $selectedDificultad",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Icon(Icons.arrow_drop_down, color: Colors.white),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          // 🔥 BOTÓN ANCHO (Configuración)
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
@@ -566,7 +669,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
 
                           const SizedBox(height: 10),
 
-                          // 🔥 SEGUNDO BOTÓN ANCHO
+                          // 🔥 SEGUNDO BOTÓN ANCHO (Mercado)
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
@@ -574,8 +677,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder:
-                                        (context) => const IngredientesScreen(),
+                                    builder: (context) => const IngredientesScreen(),
                                   ),
                                 );
                               },
@@ -602,6 +704,11 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                       ),
                     ),
                   ),
+
+
+
+
+
                 ],
               ),
             ),
