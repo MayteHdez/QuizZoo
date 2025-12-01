@@ -264,31 +264,40 @@ const SizedBox(height: 60),
                 ),
               ),
               const SizedBox(width: 10),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const FondoScreen()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: const Text(
-                    "Cambiar fondo",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
+             Expanded(
+  child: ElevatedButton(
+    onPressed: () async {
+      // Abrimos FondoScreen y esperamos la ruta seleccionada
+      final rutaSeleccionada = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const FondoScreen()),
+      );
+
+      // Si seleccionó un fondo, actualizamos la UI inmediatamente
+      if (rutaSeleccionada != null) {
+        setState(() {
+          _fondoActual = rutaSeleccionada;
+        });
+      }
+    },
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.orangeAccent,
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+    ),
+    child: const Text(
+      "Cambiar fondo",
+      style: TextStyle(
+        fontSize: 16,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  ),
+),
+
             ],
           ),
         ),

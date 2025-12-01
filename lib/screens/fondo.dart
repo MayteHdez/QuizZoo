@@ -26,14 +26,38 @@ class _FondoScreenState extends State<FondoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Lista de fondos con niveles requeridos
+    // Lista de fondos con niveles requeridos y versiones color/BN
     final List<Map<String, dynamic>> fondos = [
-      {"ruta": "assets/imagenes_general/castillo.png", "nivel": 0},
-      {"ruta": "assets/imagenes_general/playabn.png", "nivel": 10},
-      {"ruta": "assets/imagenes_general/feriabn.png", "nivel": 20},
-      {"ruta": "assets/imagenes_general/storebn.png", "nivel": 30},
-      {"ruta": "assets/imagenes_general/libreriabn.png", "nivel": 40},
-      {"ruta": "assets/imagenes_general/trenbn.png", "nivel": 50},
+      {
+        "rutaColor": "assets/imagenes_general/castillo.png",
+        "rutaBN": "assets/imagenes_general/castillo.png",
+        "nivel": 0
+      },
+      {
+        "rutaColor": "assets/imagenes_general/playa.png",
+        "rutaBN": "assets/imagenes_general/playabbn.png",
+        "nivel": 10
+      },
+      {
+        "rutaColor": "assets/imagenes_general/feria.png",
+        "rutaBN": "assets/imagenes_general/feriabn.png",
+        "nivel": 20
+      },
+      {
+        "rutaColor": "assets/imagenes_general/store.png",
+        "rutaBN": "assets/imagenes_general/storebn.png",
+        "nivel": 30
+      },
+      {
+        "rutaColor": "assets/imagenes_general/libreria.png",
+        "rutaBN": "assets/imagenes_general/libreriabn.png",
+        "nivel": 40
+      },
+      {
+        "rutaColor": "assets/imagenes_general/trenf.png",
+        "rutaBN": "assets/imagenes_general/trenbn.png",
+        "nivel": 50
+      },
     ];
 
     return Scaffold(
@@ -72,15 +96,9 @@ class _FondoScreenState extends State<FondoScreen> {
                 ),
                 itemBuilder: (context, index) {
                   final fondo = fondos[index];
-                  final ruta = fondo["ruta"];
-                  final nivelNecesario = fondo["nivel"];
                   final int nivelActual = UsuarioSesion.nivel ?? 0;
-                  final bool desbloqueado = nivelActual >= nivelNecesario;
-                  return _botonFondo(
-                    ruta,
-                    desbloqueado,
-                    nivelNecesario,
-                  );
+                  final bool desbloqueado = nivelActual >= fondo["nivel"];
+                  return _botonFondo(fondo, desbloqueado, fondo["nivel"]);
                 },
               ),
             ),
@@ -90,7 +108,9 @@ class _FondoScreenState extends State<FondoScreen> {
     );
   }
 
-  Widget _botonFondo(String ruta, bool desbloqueado, int nivelNecesario) {
+  Widget _botonFondo(Map<String, dynamic> fondo, bool desbloqueado, int nivelNecesario) {
+    final ruta = desbloqueado ? fondo["rutaColor"] : fondo["rutaBN"];
+
     return GestureDetector(
       onTap: () async {
         if (!desbloqueado) {
@@ -104,26 +124,21 @@ class _FondoScreenState extends State<FondoScreen> {
           return;
         }
 
-        // ✔ Guardar selección
-        await _guardarFondo(ruta);
+        // ✔ Guardar selección (versión a color)
+        await _guardarFondo(fondo["rutaColor"]);
 
         // ✔ Regresar a CasaScreen
-        Navigator.pop(context);
+        Navigator.pop(context, fondo["rutaColor"]); // Enviar la ruta seleccionada
       },
       child: Stack(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
-            child: ColorFiltered(
-              colorFilter: desbloqueado
-                  ? const ColorFilter.mode(Colors.transparent, BlendMode.multiply)
-                  : ColorFilter.mode(Colors.black.withOpacity(0.45), BlendMode.darken),
-              child: Image.asset(
-                ruta,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-              ),
+            child: Image.asset(
+              ruta,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
             ),
           ),
 
