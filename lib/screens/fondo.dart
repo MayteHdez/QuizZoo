@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../services/audio_global_service.dart';
 import '../usuario_session.dart';
 
 class FondoScreen extends StatefulWidget {
@@ -15,8 +13,7 @@ class _FondoScreenState extends State<FondoScreen> {
   @override
   void initState() {
     super.initState();
-    // Música global
-    AudioGlobalService().playGlobalMusic("musica/musicaglobal.mp3");
+
   }
 
   Future<void> _guardarFondo(String ruta) async {
@@ -35,7 +32,7 @@ class _FondoScreenState extends State<FondoScreen> {
       },
       {
         "rutaColor": "assets/imagenes_general/playa.png",
-        "rutaBN": "assets/imagenes_general/playabbn.png",
+        "rutaBN": "assets/imagenes_general/playabn.png",
         "nivel": 10
       },
       {

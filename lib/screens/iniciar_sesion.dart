@@ -4,10 +4,8 @@ import 'registro.dart';
 import 'mapa.dart';
 import '../usuario_session.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -15,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  bool _mostrarPassword = false;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   bool isLoading = false;
@@ -103,7 +101,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintText: 'Email',
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 15,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                     borderSide: BorderSide.none,
@@ -114,16 +115,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
               TextField(
                 controller: passwordController,
-                obscureText: true,
+                obscureText: !_mostrarPassword, // 👈 alternar visibilidad
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.lock_outline),
                   hintText: 'Contraseña',
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 15,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                     borderSide: BorderSide.none,
+                  ),
+
+                  // 👇 OJITO
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _mostrarPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _mostrarPassword = !_mostrarPassword;
+                      });
+                    },
                   ),
                 ),
               ),
@@ -136,10 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () {},
                   child: const Text(
                     '¿Olvidaste tu contraseña?',
-                    style: TextStyle(
-                      color: Colors.pinkAccent,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: Colors.pinkAccent, fontSize: 13),
                   ),
                 ),
               ),
@@ -147,25 +162,30 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 10),
 
               ElevatedButton(
-                onPressed: isLoading ? null : _login,     // <--- AQUÍ VA TU LOGIN REAL
+                onPressed:
+                    isLoading ? null : _login, // <--- AQUÍ VA TU LOGIN REAL
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF9AA2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                   elevation: 4,
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 14),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 14,
+                  ),
                 ),
-                child: isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        'Empezar',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                child:
+                    isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                          'Empezar',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
               ),
 
               const SizedBox(height: 30),
@@ -189,7 +209,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const RegistroScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const RegistroScreen(),
+                        ),
                       );
                     },
                     child: const Text(

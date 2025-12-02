@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../usuario_session.dart';
+import '../services/audio_global_service.dart';
+import 'iniciar_sesion.dart';
 
 class ConfigScreen extends StatefulWidget {
   const ConfigScreen({super.key});
@@ -8,55 +13,85 @@ class ConfigScreen extends StatefulWidget {
 }
 
 class _ConfigScreenState extends State<ConfigScreen> {
-  int volumen = 100;
+  double volumen = 0.2; // 0.0 a 1.0
+  bool muted = false;
   String tipoSeleccionado = "Seleccionar tipo...";
+  TextEditingController nombreController = TextEditingController();
 
-  void _mostrarOpcionesTipo() {
+  @override
+  void initState() {
+    super.initState();
+    cargarPreferencias();
+  }
+
+  Future<void> cargarPreferencias() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    volumen = prefs.getDouble("volumen") ?? 0.2;
+    muted = prefs.getBool("mute") ?? false;
+
+    nombreController.text = UsuarioSesion.nombreMascota ?? "";
+
+    setState(() {});
+  }
+
+  Future<void> guardarVolumen(double v) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble("volumen", v);
+    await prefs.setBool("mute", false);
+
+    AudioGlobalService().setVolume(v);
+  }
+
+  Future<void> guardarMute(bool m) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("mute", m);
+
+    m ? AudioGlobalService().mute() : AudioGlobalService().setVolume(volumen);
+  }
+
+  void cambiarNombreMascota() {
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFFFFF9DB),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          title: const Text(
-            "Selecciona tipo de preguntas",
-            style: TextStyle(
-              color: Colors.brown,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
+      builder: (context) => AlertDialog(
+        title: const Text("Cambiar nombre de mascota"),
+        content: TextField(
+          controller: nombreController,
+          decoration: const InputDecoration(hintText: "Nuevo nombre"),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancelar")),
+          TextButton(
+            onPressed: () async {
+              final nuevo = nombreController.text.trim();
+              if (nuevo.isEmpty) return;
+
+              await FirebaseFirestore.instance
+                  .collection("usuario")
+                  .doc(UsuarioSesion.email)
+                  .update({"nombreMascota": nuevo});
+
+              UsuarioSesion.nombreMascota = nuevo;
+
+              setState(() {});
+              Navigator.pop(context);
+            },
+            child: const Text("Guardar"),
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _opcionTipo("Ambos"),
-              const Divider(),
-              _opcionTipo("Solo audio"),
-              const Divider(),
-              _opcionTipo("Solo imagen"),
-            ],
-          ),
-        );
-      },
+        ],
+      ),
     );
   }
 
-  Widget _opcionTipo(String texto) {
-    return ListTile(
-      title: Text(
-        texto,
-        style: const TextStyle(color: Colors.black, fontSize: 18),
-      ),
-      trailing: tipoSeleccionado == texto
-          ? const Icon(Icons.check, color: Colors.orangeAccent)
-          : null,
-      onTap: () {
-        setState(() {
-          tipoSeleccionado = texto;
-        });
-        Navigator.pop(context);
-      },
+  Future<void> cerrarSesion() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();  
+    UsuarioSesion.limpiar();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (_) => false,
     );
   }
 
@@ -84,171 +119,105 @@ class _ConfigScreenState extends State<ConfigScreen> {
                 ),
                 const SizedBox(height: 25),
 
-                // 🐾 Nombre tu mascota
+                // 🐾 NOMBRE MASCOTA — editable
                 Row(
                   children: const [
                     Icon(Icons.pets, color: Colors.brown, size: 26),
                     SizedBox(width: 8),
-                    Text("Nombre tu mascota",
-                        style: TextStyle(fontWeight: FontWeight.w600)),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Text("Nombre ejemplo"),
-                ),
-
-                const SizedBox(height: 25),
-
-                // ❓ Tipos de preguntas
-                Row(
-                  children: const [
-                    Icon(Icons.help_outline, color: Colors.brown, size: 26),
-                    SizedBox(width: 8),
-                    Text("Tipos de preguntas",
-                        style: TextStyle(fontWeight: FontWeight.w600)),
+                    Text("Nombre de mascota", style: TextStyle(fontWeight: FontWeight.w600)),
                   ],
                 ),
                 const SizedBox(height: 8),
                 InkWell(
-                  onTap: _mostrarOpcionesTipo,
+                  onTap: cambiarNombreMascota,
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(tipoSeleccionado),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                    child: Text(UsuarioSesion.nombreMascota ?? "Sin nombre"),
                   ),
                 ),
 
                 const SizedBox(height: 25),
 
-                // 🔊 Sonido
+                // 🔊 SONIDO — Slider + mute
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Icon(Icons.volume_up, color: Colors.brown, size: 26),
+                    SizedBox(width: 8),
+                    Text("Sonido", style: TextStyle(fontWeight: FontWeight.w600)),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                Row(
                   children: [
-                    Row(
-                      children: const [
-                        Icon(Icons.volume_up, color: Colors.brown, size: 26),
-                        SizedBox(width: 8),
-                        Text("Sonido",
-                            style: TextStyle(fontWeight: FontWeight.w600)),
-                      ],
+                    IconButton(
+                      icon: Icon(muted ? Icons.volume_off : Icons.volume_up),
+                      color: Colors.orangeAccent,
+                      iconSize: 30,
+                      onPressed: () {
+                        setState(() => muted = !muted);
+                        guardarMute(muted);
+                      },
                     ),
-                    Row(
-                      children: [
-                        IconButton(
-                          icon:
-                              const Icon(Icons.remove_circle_outline, size: 28),
-                          color: Colors.orangeAccent,
-                          onPressed: () {
-                            setState(() {
-                              if (volumen > 0) volumen -= 1;
-                            });
-                          },
-                        ),
-                        Text(
-                          "$volumen%",
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.add_circle_outline, size: 28),
-                          color: Colors.orangeAccent,
-                          onPressed: () {
-                            setState(() {
-                              if (volumen < 100) volumen += 1;
-                            });
-                          },
-                        ),
-                      ],
+                    Expanded(
+                      child: Slider(
+                        value: volumen,
+                        min: 0,
+                        max: 1,
+                        divisions: 100,
+                        onChanged: (v) {
+                          setState(() {
+                            volumen = v;
+                            muted = false;
+                          });
+                          guardarVolumen(v);
+                        },
+                      ),
                     ),
                   ],
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
 
-                // 📧 Correo
+                // 📧 CORREO
                 Row(
                   children: const [
                     Icon(Icons.email_outlined, color: Colors.brown, size: 26),
                     SizedBox(width: 8),
-                    Text("Correo",
-                        style: TextStyle(fontWeight: FontWeight.w600)),
+                    Text("Correo", style: TextStyle(fontWeight: FontWeight.w600)),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Text("ejemplo@gmail.com"),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                  child: Text(UsuarioSesion.email ?? "No disponible"),
                 ),
 
                 const SizedBox(height: 25),
 
-                // 🏆 Nivel y Monedas
+                // 🏆 Nivel y monedas
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.emoji_events,
-                            color: Colors.brown, size: 26),
-                        const SizedBox(width: 8),
-                        const Text("Nivel",
-                            style: TextStyle(fontWeight: FontWeight.w600)),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.orangeAccent.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Text(
-                            "4",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ),
+                        const Icon(Icons.emoji_events, color: Colors.brown),
+                        const SizedBox(width: 6),
+                        const Text("Nivel: "),
+                        Text("${UsuarioSesion.nivel ?? 1}",
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
                     Row(
                       children: [
-                        const Icon(Icons.attach_money,
-                            color: Colors.brown, size: 26),
-                        const SizedBox(width: 8),
-                        const Text("Monedas",
-                            style: TextStyle(fontWeight: FontWeight.w600)),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.orangeAccent.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Text(
-                            "127",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ),
+                        const Icon(Icons.attach_money, color: Colors.brown),
+                        const SizedBox(width: 6),
+                        const Text("Monedas: "),
+                        Text("${UsuarioSesion.monedas ?? 0}",
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ],
@@ -256,45 +225,30 @@ class _ConfigScreenState extends State<ConfigScreen> {
 
                 const SizedBox(height: 35),
 
-                // 🔄 Cambiar cuenta
+                // 🔄 CERRAR SESIÓN
                 Center(
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.brown,
                       side: const BorderSide(color: Colors.orangeAccent, width: 2),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 60, vertical: 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25)),
-                      textStyle: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.w600),
+                      padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 16),
                     ),
-                    onPressed: () {},
-                    child: const Text("Cambiar cuenta"),
+                    onPressed: cerrarSesion,
+                    child: const Text("Cerrar sesión"),
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
 
-                // 🩷 Aceptar
+                // 🩷 ACEPTAR
                 Center(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFFC8D0),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 80, vertical: 18),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25)),
-                      textStyle: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.w600),
+                      padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 18),
                     ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      "Aceptar",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("Aceptar", style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
@@ -305,3 +259,4 @@ class _ConfigScreenState extends State<ConfigScreen> {
     );
   }
 }
+

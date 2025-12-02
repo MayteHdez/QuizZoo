@@ -6,6 +6,7 @@ import 'casa.dart';
 import '../services/audio_global_service.dart';
 import '../services/history_music_service.dart';
 import '../usuario_session.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MapaScreen extends StatefulWidget {
   const MapaScreen({super.key});
@@ -20,11 +21,25 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _cargarVolumen();
     // Detener música de historia
     HistoryMusicService().stopStoryMusic();
 
     // Encender música global
     AudioGlobalService().playGlobalMusic("musica/musicaglobal.mp3");
+  }
+
+  Future<void> _cargarVolumen() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    double vol = prefs.getDouble("volume") ?? 0.2;
+    bool mute = prefs.getBool("mute") ?? false;
+
+    if (mute) {
+      AudioGlobalService().mute();
+    } else {
+      AudioGlobalService().setVolume(vol);
+    }
   }
 
   @override
@@ -67,7 +82,7 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
 
   double topBiologia = 177;
   double leftBiologia = 629;
-  
+
   double topLit = 208;
   double leftLit = 450;
 
@@ -78,63 +93,62 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
   double leftHis = 379;
 
   void actualizarCoordenadasSegunDificultad(int dificultad) {
-  if (dificultad == 1) {
-    topMate = 177;
-    leftMate = 131;
-    topGramatica = 208;
-    leftGramatica = 700;
-    topBiologia = 177;
-    leftBiologia = 629;
-    topLit = 208;
-    leftLit = 450;
-    topGeo = 208;
-    leftGeo = 202;
-    topHis = 177;
-    leftHis = 379;
-  } else if (dificultad == 2) {
-    topMate = 130;
-    leftMate = 78;
-    topGeo = 247;
-    leftGeo = 166;
-    topHis = 130;
-    leftHis = 322;
-    topLit = 247;
-    leftLit = 414;
-    topBiologia = 130;
-    leftBiologia = 572;
-    topGramatica = 247;
-    leftGramatica = 662;
-  } else if (dificultad == 3) {
-    topMate = 80;
-    leftMate = 160;
-    topGeo = 275;
-    leftGeo = 118;
-    topHis = 80;
-    leftHis = 408;
-    topLit = 275;
-    leftLit = 364;
-    topBiologia = 79;
-    leftBiologia = 655;
-    topGramatica = 275;
-    leftGramatica = 612;
-  }else if (dificultad == 4) {
-    topMate = 75;
-    leftMate = 200;
-    topGeo = 299;
-    leftGeo = 49;
-    topHis = 75;
-    leftHis = 448;
-    topLit = 299;
-    leftLit = 295;
-    topBiologia = 74;
-    leftBiologia = 695;
-    topGramatica = 299;
-    leftGramatica = 543;
+    if (dificultad == 1) {
+      topMate = 177;
+      leftMate = 131;
+      topGramatica = 208;
+      leftGramatica = 700;
+      topBiologia = 177;
+      leftBiologia = 629;
+      topLit = 208;
+      leftLit = 450;
+      topGeo = 208;
+      leftGeo = 202;
+      topHis = 177;
+      leftHis = 379;
+    } else if (dificultad == 2) {
+      topMate = 130;
+      leftMate = 78;
+      topGeo = 247;
+      leftGeo = 166;
+      topHis = 130;
+      leftHis = 322;
+      topLit = 247;
+      leftLit = 414;
+      topBiologia = 130;
+      leftBiologia = 572;
+      topGramatica = 247;
+      leftGramatica = 662;
+    } else if (dificultad == 3) {
+      topMate = 80;
+      leftMate = 160;
+      topGeo = 275;
+      leftGeo = 118;
+      topHis = 80;
+      leftHis = 408;
+      topLit = 275;
+      leftLit = 364;
+      topBiologia = 79;
+      leftBiologia = 655;
+      topGramatica = 275;
+      leftGramatica = 612;
+    } else if (dificultad == 4) {
+      topMate = 75;
+      leftMate = 200;
+      topGeo = 299;
+      leftGeo = 49;
+      topHis = 75;
+      leftHis = 448;
+      topLit = 299;
+      leftLit = 295;
+      topBiologia = 74;
+      leftBiologia = 695;
+      topGramatica = 299;
+      leftGramatica = 543;
+    }
+
+    setState(() {});
   }
-
-  setState(() {});
-}
-
 
   double generalTop = 177;
   double generalLeft = 131;
@@ -143,76 +157,73 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
 
   int selectedDificultad = 1;
 
-  final Map<int, int> dificultadMinimaNivel = {
-    1: 1,
-    2: 5,
-    3: 10,
-    4: 15,
-  };
+  final Map<int, int> dificultadMinimaNivel = {1: 1, 2: 5, 3: 10, 4: 15};
 
   void _abrirSelectorDificultad() async {
-  showModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
-    builder: (context) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 6),
-            Text(
-              "Selecciona dificultad",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.purple[800],
-              ),
-            ),
-            const SizedBox(height: 8),
-            for (int d = 1; d <= 4; d++)
-              ListTile(
-                leading: CircleAvatar(
-                  child: Text("$d"),
-                  radius: 14,
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 6),
+              Text(
+                "Selecciona dificultad",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.purple[800],
                 ),
-                title: Text("Dificultad $d"),
-                subtitle: (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!
-                    ? null
-                    : Text(
-                        "Se desbloquea en nivel ${dificultadMinimaNivel[d]}",
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                trailing: (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!
-                    ? (selectedDificultad == d
-                        ? const Icon(Icons.check_circle, color: Color.fromARGB(255, 227, 153, 178))
-                        : null)
-                    : const Icon(Icons.lock, color: Colors.grey),
-                enabled: (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!,
-                onTap: (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!
-                    ? () {
-                        setState(() {
-                          selectedDificultad = d;
-
-                          // 🔥🔥 AQUÍ SE ACTUALIZAN LAS COORDENADAS 🔥🔥
-                          actualizarCoordenadasSegunDificultad(d);
-                        });
-
-                        Navigator.pop(context);
-                      }
-                    : null,
               ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      );
-    },
-  );
-}
+              const SizedBox(height: 8),
+              for (int d = 1; d <= 4; d++)
+                ListTile(
+                  leading: CircleAvatar(child: Text("$d"), radius: 14),
+                  title: Text("Dificultad $d"),
+                  subtitle:
+                      (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!
+                          ? null
+                          : Text(
+                            "Se desbloquea en nivel ${dificultadMinimaNivel[d]}",
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                  trailing:
+                      (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!
+                          ? (selectedDificultad == d
+                              ? const Icon(
+                                Icons.check_circle,
+                                color: Color.fromARGB(255, 227, 153, 178),
+                              )
+                              : null)
+                          : const Icon(Icons.lock, color: Colors.grey),
+                  enabled:
+                      (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!,
+                  onTap:
+                      (UsuarioSesion.nivel ?? 0) >= dificultadMinimaNivel[d]!
+                          ? () {
+                            setState(() {
+                              selectedDificultad = d;
 
+                              // 🔥🔥 AQUÍ SE ACTUALIZAN LAS COORDENADAS 🔥🔥
+                              actualizarCoordenadasSegunDificultad(d);
+                            });
 
+                            Navigator.pop(context);
+                          }
+                          : null,
+                ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   void moverBotonGeneral(double top, double left, String tema, int nivel) {
     setState(() {
@@ -325,7 +336,12 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 160,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(topMate, leftMate, "Matemáticas", UsuarioSesion.dificultadSeleccionada);
+                            moverBotonGeneral(
+                              topMate,
+                              leftMate,
+                              "Matemáticas",
+                              UsuarioSesion.dificultadSeleccionada,
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -369,7 +385,12 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 130,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(topGeo, leftGeo, "Geografía", UsuarioSesion.dificultadSeleccionada);
+                            moverBotonGeneral(
+                              topGeo,
+                              leftGeo,
+                              "Geografía",
+                              UsuarioSesion.dificultadSeleccionada,
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -413,7 +434,12 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 410,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(topHis, leftHis, "Historia", UsuarioSesion.dificultadSeleccionada);
+                            moverBotonGeneral(
+                              topHis,
+                              leftHis,
+                              "Historia",
+                              UsuarioSesion.dificultadSeleccionada,
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -457,7 +483,12 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 380,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(topLit, leftLit, "Literatura", UsuarioSesion.dificultadSeleccionada);
+                            moverBotonGeneral(
+                              topLit,
+                              leftLit,
+                              "Literatura",
+                              UsuarioSesion.dificultadSeleccionada,
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -501,7 +532,12 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 660,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(topBiologia, leftBiologia, "Biología", UsuarioSesion.dificultadSeleccionada);
+                            moverBotonGeneral(
+                              topBiologia,
+                              leftBiologia,
+                              "Biología",
+                              UsuarioSesion.dificultadSeleccionada,
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -545,7 +581,12 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: 630,
                         child: ElevatedButton(
                           onPressed: () {
-                            moverBotonGeneral(topGramatica, leftGramatica, "Gramatica", UsuarioSesion.dificultadSeleccionada);
+                            moverBotonGeneral(
+                              topGramatica,
+                              leftGramatica,
+                              "Gramatica",
+                              UsuarioSesion.dificultadSeleccionada,
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -591,7 +632,8 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                         left: generalLeft,
                         child: ElevatedButton(
                           onPressed: () {
-                            UsuarioSesion.dificultadSeleccionada = selectedDificultad;
+                            UsuarioSesion.dificultadSeleccionada =
+                                selectedDificultad;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -689,8 +731,15 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                             child: ElevatedButton(
                               onPressed: _abrirSelectorDificultad,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color.fromARGB(255, 225, 134, 244),
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                backgroundColor: const Color.fromARGB(
+                                  255,
+                                  225,
+                                  134,
+                                  244,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
@@ -709,7 +758,10 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-                                  const Icon(Icons.arrow_drop_down, color: Colors.white),
+                                  const Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.white,
+                                  ),
                                 ],
                               ),
                             ),
@@ -759,7 +811,8 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const IngredientesScreen(),
+                                    builder:
+                                        (context) => const IngredientesScreen(),
                                   ),
                                 );
                               },
@@ -786,11 +839,6 @@ class _MapaScreenState extends State<MapaScreen> with WidgetsBindingObserver {
                       ),
                     ),
                   ),
-
-
-
-
-
                 ],
               ),
             ),

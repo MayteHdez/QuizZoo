@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:quizapp/screens/alimentar.dart';
 import 'mapa.dart';
 import 'fondo.dart';
-import '../services/audio_global_service.dart';
-import '../services/history_music_service.dart';
 import '../usuario_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,9 +24,6 @@ _checkHungerStatus();
 _saveLastVisitTime();
 
 _setImagenMascota(); // Inicializa imagen según tipo de mascota
-
-HistoryMusicService().stopStoryMusic();
-AudioGlobalService().playGlobalMusic("musica/musicaglobal.mp3");
 
 }
 
